@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Greenfield Fitness</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" href="https://cdn.hello.coop/images/greenfield-logo.png" />
+        <link href="https://cdn.hello.coop/css/tailwind.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="https://cdn.hello.coop/css/hello-button.css" />
+        <style>
+            #spinner {
+                animation: spin 1s linear infinite;
+            }
+            @keyframes spin {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+            @media only screen and (max-width: 500px) {
+                body {
+                    padding: 0px !important;
+                    height: 100vh !important;
+                    align-items: center !important;
+                }
+                section {
+                    background-color: transparent !important;
+                    color: white !important;
+                    width: auto !important;
+                }
+                section h2 {
+                    opacity: 0.8 !important;
+                }
+                #signin-page {
+                    justify-content: start !important;
+                }
+            }
+            .shadow-medium {
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            }
+            .greeting {
+                margin-top: -50px;
+            }
+            @media only screen and (max-width: 640px) {
+                .greeting {
+                    margin-top: -24px;
+                }
+            }
+        </style>
+        <script>
+            /**
+             * If browser back button was used, flush cache
+             * This ensures that user will always see an accurate, up-to-date view based on their state
+             * https://stackoverflow.com/questions/8788802/prevent-safari-loading-from-cache-when-back-button-is-clicked
+             */
+            (function () {
+                window.onpageshow = function (event) {
+                    if (event.persisted) {
+                        window.location.reload();
+                    }
+                };
+            })();
+        </script>
+    </head>
+    <body>
+        <div id="modal" class="fixed w-screen h-screen hidden items-center justify-center z-50">
+            <div class="bg-white p-4 rounded-md w-96 z-50 flex relative">
+                <div class="w-10 h-10 bg-red-500 bg-opacity-20 rounded-full inline-flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <div class="flex flex-col ml-4">
+                    <h4 class="font-medium">Error</h4>
+                    <button onclick="closeModal()" class="absolute right-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    <div class="text-sm opacity-80">
+                        <p id="error-container" class="hidden"><span id="error"></span></p>
+                        <p id="error-description-container" class="mt-2 hidden">Error description: <span id="error-description"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div onclick="closeModal()" class="fixed w-screen h-screen z-40 flex items-center justify-center bg-black bg-opacity-20"></div>
+        </div>
+        <div id="signin-page" style="display: none;" class="md:px-10 md:py-16 h-screen flex flex-col justify-center items-center bg-no-repeat bg-cover">
+            <div class="bg-black w-full z-10 h-screen absolute inset-0 bg-opacity-50" aria-hidden="true"></div>
+            <section class="relative z-40 bg-white flex flex-col rounded-md p-6 text-center" style="width: 26rem;">
+                <div class="flex items-center justify-center">
+                    <img src="https://cdn.hello.coop/images/greenfield-logo.png" alt="greenfield fitness" class="h-12" />
+                    <span class="text-2xl ml-2 font-medium">Greenfield Fitness</span>
+                </div>
+                <p class="text-sm opacity-60 mt-2">A virtual personal trainer and nutritionist in one, with hundreds of workouts to tackle at home, plus personalized meal plans and recipes.</p>
+                <div class="my-8 space-y-4 text-left">
+                    <div class="flex items-center">
+                        <img src="assets/1.svg" class="h-16" />
+                        <h2 class="ml-4 opacity-60">Advanced metrics, health and activity monitoring</h2>
+                    </div>
+                    <div class="flex items-center">
+                        <img src="assets/2.svg" class="h-16" />
+                        <h2 class="ml-4 opacity-60">Daily workout exercise sessions</h2>
+                    </div>
+                    <div class="flex items-center">
+                        <img src="assets/3.svg" class="h-16" />
+                        <h2 class="ml-4 opacity-60">Daily yoga workout plans</h2>
+                    </div>
+                    <div class="flex items-center">
+                        <img src="assets/4.svg" class="h-16" />
+                        <h2 class="ml-4 opacity-60">Effective diet plans exclusive to you</h2>
+                    </div>
+                </div>
+                <button onclick="signin()" id="continue" class="hello-btn-dark w-full" style="margin: 0 auto;">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
+            </section>
+        </div>
+        <div id="profile-page" class="h-screen" style="display: none; background: #f9fbfd;">
+            <header class="h-14 bg-white shadow-medium fixed w-full z-40">
+                <div class="h-full flex items-center justify-between container px-6 sm:max-w-5xl mx-auto">
+                    <div class="flex items-center justify-center">
+                        <img src="https://cdn.hello.coop/images/greenfield-logo.png" alt="greenfield fitness" class="h-9" />
+                        <span class="text-xl ml-2 font-medium">Greenfield Fitness</span>
+                    </div>
+                    <button onClick="signout()" class="text-sm font-semibold">Log Out</button>
+                </div>
+            </header>
+            <main id="profile-page-content" style="display: none;" class="container px-6 sm:max-w-5xl mx-auto pt-20 pb-24">
+                <div class="relative flex flex-col items-start sm:items-center">
+                    <img
+                        src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1649&q=80"
+                        class="h-36 sm:h-64 w-full rounded-md object-cover"
+                    />
+                    <div id="picture" class="shadow-medium border-4 border-white h-20 w-20 sm:h-36 sm:w-36 rounded-md -mt-12 sm:-mt-16 ml-4 sm:ml-0 bg-gray-200 bg-no-repeat bg-cover bg-center"></div>
+                </div>
+                <h1 class="greeting absolute text-xl sm:text-2xl font-medium ml-28 sm:ml-0">Hellō <span id="preferred-name"></span>!</h1>
+                <div class="flex flex-col space-y-8 md:space-y-0 md:flex-row md:space-x-8 mt-16 md:mt-20">
+                    <div class="w-full md:w-3/5 bg-white p-4 rounded-md shadow-medium text-lg font-medium">
+                        <div class="space-y-4">
+                            <div>
+                                <h3 class="opacity-60">Full Name</h3>
+                                <h2 class="opacity-80" id="full-name"></h2>
+                            </div>
+                            <div>
+                                <h3 class="opacity-60">Email</h3>
+                                <h2 class="opacity-80" id="email"></h2>
+                            </div>
+                            <!-- <div>
+                        <h3 class="opacity-60">Phone</h3>
+                        <h2 class="opacity-80" id="phone"></h2>
+                        </div> -->
+                        </div>
+                        <button onclick="signin({profile_update: true})" id="update-profile" class="mt-16 hello-btn-light">ō&nbsp;&nbsp;&nbsp;Update Profile with Hellō</button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-5 p-4 w-full md:w-2/5 bg-white rounded-md shadow-medium font-medium">
+                        <div class="bg-black rounded-md p-4" style="background: #fcead2; color: #f49413;">
+                            <span class="block text-3xl">0 mi</span>
+                            <span>distance covered</span>
+                        </div>
+                        <div class="bg-black rounded-md p-4" style="background: #faebe4; color: #ff7d41;">
+                            <span class="block text-3xl">0 steps</span>
+                            <span>steps</span>
+                        </div>
+                        <div class="bg-black rounded-md p-4" style="background: #eceef5; color: #87a1fb;">
+                            <span class="block text-3xl">0 cal</span>
+                            <span>calories burned</span>
+                        </div>
+                        <div class="bg-black rounded-md p-4" style="background: #f5ecec; color: #ff7474;">
+                            <span class="block text-3xl">0 mins</span>
+                            <span>exercised</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </body>
+    <script>
+        const $ = (id) => document.getElementById(id);
+
+        const CONSENT_BASE = "https://consent.hello.coop";
+        const CLIENT_ID = "3574f001-0874-4b20-bffd-8f3e37634274";
+
+        let data, id_token;
+
+        (function () {
+            window.onpageshow = function (event) {
+                if (event.persisted) {
+                    window.location.reload();
+                }
+            };
+        })();
+
+        window.onload = async () => {
+            if ($("loader")) removeLoader(); //Remove loading if comes back to the page after leaving from a loading state
+            const params = new URLSearchParams(window.location.hash.substring(1));
+
+            if (params.has("id_token")) {
+                id_token = params.get("id_token");
+                getInfo();
+            } else if (params.has("error")) {
+                user_data = {
+                    error: params.get("error"),
+                    error_description: params.get("error_description"),
+                    error_uri: params.get("error_uri"),
+                };
+
+                $("modal").style.display = "flex";
+
+                if (user_data.error) {
+                    $("error-container").style.display = "block";
+                    switch (user_data.error) {
+                        case "access_denied":
+                            $("error").innerText = "User denied access.";
+                            break;
+                        default:
+                            $("error").innerText = "Something went wrong.";
+                    }
+                }
+
+                if (user_data.error_description) {
+                    $("error-description-container").style.display = "block";
+                    switch (user_data.error_description) {
+                        default:
+                            $("error").innerText = "Something went wrong.";
+                    }
+                }
+
+                if (sessionStorage.getItem("data")) {
+                    try {
+                        data = JSON.parse(sessionStorage.getItem("data"));
+                        hydrate();
+                        $("profile-page").style.display = $("profile-page-content").style.display = "block";
+                    } catch (err) {
+                        console.log(err);
+                        sessionStorage.removeItem("data");
+                        showSigninPage();
+                    }
+                } else {
+                    showSigninPage();
+                }
+            } else {
+                showSigninPage();
+            }
+            clearFragment();
+        };
+
+        function uuidv4() {
+            return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16));
+        }
+
+        async function getInfo() {
+            showLoader();
+            const nonce = sessionStorage.getItem("nonce");
+            data = await fetch(CONSENT_BASE + "/oauth/introspect", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `id_token=${id_token}&nonce=${nonce}&client_id=${CLIENT_ID}`,
+            })
+                .then((r) => r.json())
+                .then((data) => {
+                    return data;
+                })
+                .catch((err) => {
+                    console.error(err);
+                    removeLoader();
+                    showSigninPage();
+                });
+
+            sessionStorage.setItem("data", JSON.stringify(data));
+
+            sendEvent({ u: "/profile" });
+            hydrate();
+            $("profile-page").style.display = $("profile-page-content").style.display = "block";
+            removeLoader();
+        }
+
+        function clearFragment() {
+            window.location.replace("#");
+            // slice off the remaining '#' in HTML5:
+            if (typeof window.history.replaceState == "function") {
+                history.replaceState({}, "", window.location.href.slice(0, -1));
+            }
+        }
+
+        function closeModal() {
+            $("modal").style.display = "none";
+        }
+
+        function hydrate() {
+            const { name, nickname, picture, email, phone } = data;
+
+            $("full-name").innerText = name;
+            $("preferred-name").innerText = nickname;
+            $("email").innerText = email;
+            $("picture").src = picture;
+            $("picture").style.backgroundImage = `url('${picture}')`;
+            // $("phone").innerText = phone;
+        }
+
+        function showLoader(location) {
+            if (location === "signin") {
+                $("signin-page").style.display = "none";
+                document.body.innerHTML += `
+               <div
+                   id="loader"
+                   style="
+                       position: absolute;
+                       left: 0;
+                       top: 0;
+                       z-index: 50;
+                       display: flex;
+                       align-items: center;
+                       justify-content: center;
+                       width: 100%;
+                       height: 100%;
+                   "
+               >
+                   <svg
+                       id="spinner"
+                       style="color: #303030; height: 3.2rem; width: 3.2rem"
+                       xmlns="http://www.w3.org/2000/svg"
+                       fill="none"
+                       viewBox="0 0 24 24"
+                   >
+                       <circle
+                           style="opacity: 0.5"
+                           cx="12"
+                           cy="12"
+                           r="10"
+                           stroke="currentColor"
+                           stroke-width="3"
+                       />
+                       <path opacity="0.5" d="M2 12C2 6.47715 6.47715 2 12 2" stroke="black" stroke-width="3" />
+                   </svg>
+               </div>
+               `;
+            } else {
+                $("profile-page").style.display = "none";
+                document.body.innerHTML += `
+                 <div
+                     id="loader"
+                     style="
+                         position: absolute;
+                         left: 0;
+                         top: 0;
+                         z-index: 50;
+                         display: flex;
+                         align-items: center;
+                         justify-content: center;
+                         width: 100%;
+                         height: 100%;
+                     "
+                 >
+                     <svg
+                         id="spinner"
+                         style="color: #303030; height: 3.2rem; width: 3.2rem"
+                         xmlns="http://www.w3.org/2000/svg"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                     >
+                         <circle
+                             style="opacity: 0.5"
+                             cx="12"
+                             cy="12"
+                             r="10"
+                             stroke="currentColor"
+                             stroke-width="3"
+                         />
+                         <path opacity="0.5" d="M2 12C2 6.47715 6.47715 2 12 2" stroke="black" stroke-width="3" />
+                     </svg>
+                 </div>
+             `;
+            }
+        }
+
+        function removeLoader() {
+            var el = $("loader");
+            el.remove();
+        }
+
+        async function signin({ profile_update = false } = {}) {
+            if (!profile_update) {
+                showLoader("signin");
+                await sendEvent({ u: "/start/login", n: "action" });
+            } else {
+                await sendEvent({ u: "/update-profile", n: "action" });
+                showLoader();
+            }
+
+            const nonce = uuidv4();
+            sessionStorage.setItem("nonce", nonce);
+
+            const url = new URL(CONSENT_BASE);
+            url.searchParams.append("client_id", CLIENT_ID);
+            url.searchParams.append("redirect_uri", window.location.origin + window.location.pathname);
+            url.searchParams.append("nonce", nonce);
+            url.searchParams.append("response_mode", "fragment");
+            url.searchParams.append("response_type", "id_token");
+            if (profile_update) {
+                url.searchParams.append("scope", "openid name nickname picture email profile_update");
+            } else {
+                url.searchParams.append("scope", "openid name nickname picture email");
+            }
+            window.location.href = url;
+        }
+
+        function signout() {
+            sendEvent({ u: "/logout", n: "action" });
+            showLoader();
+            sessionStorage.removeItem("data");
+            showSigninPage();
+            removeLoader();
+        }
+
+        function showSigninPage() {
+            if (window.location.hash.includes("iiw")) {
+                sendEvent({ u: "/", r: "https://iiw.greenfielddemo.com/" });
+            } else {
+                sendEvent({ u: "/" });
+            }
+            $("signin-page").style.display = "flex";
+            $("profile-page-content").style.display = "none";
+            $("signin-page").style.backgroundImage = "url(https://images.unsplash.com/photo-1521804906057-1df8fdb718b7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1650&q=80)";
+        }
+
+        async function sendEvent(body) {
+            if (localStorage.getItem("plausible_ignore") == "true") return;
+            const _body = {
+                w: window.innerWidth,
+                d: window.location.hostname,
+                ...body,
+                n: body.n || "pageview",
+                r: body.r || document.referrer || null,
+                u: new URL(body.u, window.location.origin),
+            };
+            try {
+                await fetch("https://plausible.io/api/event", {
+                    method: "POST",
+                    body: JSON.stringify(_body),
+                });
+                console.info(`Event sent: ${_body.u} (${_body.n})`);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    </script>
+</html>
