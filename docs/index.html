@@ -50,7 +50,7 @@
             }
 
             @media (prefers-color-scheme: light) {
-                body, #login-card{
+                body, #login-card, #modal{
                     background-color: white;
                     color: #303030;
                 }
@@ -63,9 +63,12 @@
             }
 
             @media (prefers-color-scheme: dark) {
-                body, #login-card{
+                body, #login-card, #modal{
                     background-color: #151515;
                     color: #D4D4D4;
+                }
+                #modal{
+                    border: 1px solid #808080;
                 }
                 #profile-page{
                     background-color: #151515;
@@ -101,8 +104,8 @@
         </script>
     </head>
     <body>
-        <div id="modal" class="fixed w-screen h-screen hidden items-center justify-center z-50">
-            <div class="p-4 rounded-md w-96 z-50 flex relative">
+        <div id="modal-container" class="fixed w-screen h-screen hidden items-center justify-center z-50">
+            <div id="modal" class="p-4 rounded-md w-96 z-50 flex relative">
                 <div class="w-10 h-10 bg-red-500 bg-opacity-20 rounded-full inline-flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -249,7 +252,7 @@
                     error_uri: params.get("error_uri"),
                 };
 
-                $("modal").style.display = "flex";
+                $("modal-container").style.display = "flex";
 
                 if (user_data.error) {
                     $("error-container").style.display = "block";
@@ -330,7 +333,7 @@
         }
 
         function closeModal() {
-            $("modal").style.display = "none";
+            $("modal-container").style.display = "none";
         }
 
         function hydrate() {
@@ -364,7 +367,7 @@
                >
                    <svg
                        id="spinner"
-                       style="color: #303030; height: 3.2rem; width: 3.2rem"
+                       style="height: 3.2rem; width: 3.2rem"
                        xmlns="http://www.w3.org/2000/svg"
                        fill="none"
                        viewBox="0 0 24 24"
@@ -400,7 +403,7 @@
                  >
                      <svg
                          id="spinner"
-                         style="color: #303030; height: 3.2rem; width: 3.2rem"
+                         style="height: 3.2rem; width: 3.2rem"
                          xmlns="http://www.w3.org/2000/svg"
                          fill="none"
                          viewBox="0 0 24 24"
