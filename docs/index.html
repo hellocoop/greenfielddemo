@@ -8,6 +8,10 @@
         <link href="https://cdn.hello.coop/css/tailwind.css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="https://cdn.hello.coop/css/hello-button.css" />
         <style>
+            body{
+                min-width: 350px;
+                overflow-x: auto;    
+            }
             #spinner {
                 animation: spin 1s linear infinite;
             }
@@ -127,7 +131,7 @@
             <div onclick="closeModal()" class="fixed w-screen h-screen z-40 flex items-center justify-center bg-black bg-opacity-60"></div>
         </div>
         <div id="signin-page" style="display: none;" class="md:px-10 md:py-16 h-screen flex flex-col justify-center items-center bg-no-repeat bg-cover">
-            <div class="bg-black w-full z-10 h-screen absolute inset-0 bg-opacity-50" aria-hidden="true"></div>
+            <div class="bg-black w-full z-10 h-screen fixed inset-0 bg-opacity-50" aria-hidden="true"></div>
             <section id="login-card" class="relative z-40 bg-white flex flex-col rounded-md p-6 text-center" style="width: 26rem;">
                 <div class="flex items-center justify-center">
                     <img src="https://cdn.hello.coop/images/greenfield-logo.png" alt="greenfield fitness" class="h-12" />
