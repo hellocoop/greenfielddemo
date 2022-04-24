@@ -48,6 +48,42 @@
                     margin-top: -24px;
                 }
             }
+
+            @media (prefers-color-scheme: light) {
+                body, #login-card{
+                    background-color: white;
+                    color: #303030;
+                }
+                header{
+                    background-color: white;
+                }
+                #profile-page{
+                    background-color: white;
+                }
+            }
+
+            @media (prefers-color-scheme: dark) {
+                body, #login-card{
+                    background-color: #151515;
+                    color: #D4D4D4;
+                }
+                #profile-page{
+                    background-color: #151515;
+                }
+                header{
+                    background-color: #303030;
+                }
+                #picture{
+                    border: 4px solid #808080;
+                }
+                .card{
+                    background-color: #303030;
+                    color: #D4D4D4;   
+                }
+                .metric-card{
+                    color: #303030;
+                }
+            }
         </style>
         <script>
             /**
@@ -66,7 +102,7 @@
     </head>
     <body>
         <div id="modal" class="fixed w-screen h-screen hidden items-center justify-center z-50">
-            <div class="bg-white p-4 rounded-md w-96 z-50 flex relative">
+            <div class="p-4 rounded-md w-96 z-50 flex relative">
                 <div class="w-10 h-10 bg-red-500 bg-opacity-20 rounded-full inline-flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -85,11 +121,11 @@
                     </div>
                 </div>
             </div>
-            <div onclick="closeModal()" class="fixed w-screen h-screen z-40 flex items-center justify-center bg-black bg-opacity-20"></div>
+            <div onclick="closeModal()" class="fixed w-screen h-screen z-40 flex items-center justify-center bg-black bg-opacity-60"></div>
         </div>
         <div id="signin-page" style="display: none;" class="md:px-10 md:py-16 h-screen flex flex-col justify-center items-center bg-no-repeat bg-cover">
             <div class="bg-black w-full z-10 h-screen absolute inset-0 bg-opacity-50" aria-hidden="true"></div>
-            <section class="relative z-40 bg-white flex flex-col rounded-md p-6 text-center" style="width: 26rem;">
+            <section id="login-card" class="relative z-40 bg-white flex flex-col rounded-md p-6 text-center" style="width: 26rem;">
                 <div class="flex items-center justify-center">
                     <img src="https://cdn.hello.coop/images/greenfield-logo.png" alt="greenfield fitness" class="h-12" />
                     <span class="text-2xl ml-2 font-medium">Greenfield Fitness</span>
@@ -114,14 +150,14 @@
                     </div>
                 </div>
                 <button onclick="signin()" id="continue"
-                    class="hello-btn-black-on-light"
+                    class="hello-btn-black-and-static"
                 >
                     ō&nbsp;&nbsp;&nbsp;Continue with Hellō
                 </button>
             </section>
         </div>
-        <div id="profile-page" class="h-screen" style="display: none; background: #f9fbfd;">
-            <header class="h-14 bg-white shadow-medium fixed w-full z-40">
+        <div id="profile-page" class="h-screen" style="display: none;">
+            <header class="h-14 shadow-medium fixed w-full z-40">
                 <div class="h-full flex items-center justify-between container px-6 sm:max-w-5xl mx-auto">
                     <div class="flex items-center justify-center">
                         <img src="https://cdn.hello.coop/images/greenfield-logo.png" alt="greenfield fitness" class="h-9" />
@@ -140,7 +176,7 @@
                 </div>
                 <h1 class="greeting absolute text-xl sm:text-2xl font-medium ml-28 sm:ml-0">Hellō <span id="preferred-name"></span>!</h1>
                 <div class="flex flex-col space-y-8 md:space-y-0 md:flex-row md:space-x-8 mt-16 md:mt-20">
-                    <div class="w-full md:w-3/5 bg-white p-4 rounded-md shadow-medium text-lg font-medium">
+                    <div class="card w-full md:w-3/5 p-4 rounded-md shadow-medium text-lg font-medium">
                         <div class="space-y-4">
                             <div>
                                 <h3 class="opacity-60">Full Name</h3>
@@ -156,25 +192,25 @@
                         </div> -->
                         </div>
                         <button onclick="signin({profile_update: true})" id="update-profile"
-                            class="mt-16 hello-btn-white-on-light"
+                            class="mt-16 hello-btn-white-and-static"
                         >
                                 ō&nbsp;&nbsp;&nbsp;Update Profile with Hellō
                         </button>
                     </div>
-                    <div class="grid grid-cols-2 gap-5 p-4 w-full md:w-2/5 bg-white rounded-md shadow-medium font-medium">
-                        <div class="bg-black rounded-md p-4" style="background: #fcead2; color: #f49413;">
+                    <div class="card grid grid-cols-2 gap-5 p-4 w-full md:w-2/5 rounded-md shadow-medium font-medium">
+                        <div class="metric-card rounded-md p-4" style="background-color: #fcead2;">
                             <span class="block text-3xl">0 mi</span>
                             <span>distance covered</span>
                         </div>
-                        <div class="bg-black rounded-md p-4" style="background: #faebe4; color: #ff7d41;">
+                        <div class="metric-card rounded-md p-4" style="background-color: #faebe4;">
                             <span class="block text-3xl">0 steps</span>
                             <span>steps</span>
                         </div>
-                        <div class="bg-black rounded-md p-4" style="background: #eceef5; color: #87a1fb;">
+                        <div class="metric-card rounded-md p-4" style="background-color: #eceef5;">
                             <span class="block text-3xl">0 cal</span>
                             <span>calories burned</span>
                         </div>
-                        <div class="bg-black rounded-md p-4" style="background: #f5ecec; color: #ff7474;">
+                        <div class="metric-card rounded-md p-4" style="background-color: #f5ecec;">
                             <span class="block text-3xl">0 mins</span>
                             <span>exercised</span>
                         </div>
