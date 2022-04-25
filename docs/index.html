@@ -467,10 +467,17 @@
         }
 
         function showSigninPage() {
+            let u = '/'
+            if(window.location.search){
+                u += window.location.search
+            }
             if (window.location.hash.includes("iiw")) {
-                sendEvent({ u: "/", r: "https://iiw.greenfielddemo.com/" });
+                sendEvent({ u, r: "https://iiw.greenfielddemo.com/" })
             } else {
-                sendEvent({ u: "/" });
+                sendEvent({ u })
+            }
+            if(window.location.search){
+                window.history.replaceState({}, document.title, '/')
             }
             $("signin-page").style.display = "flex";
             $("profile-page-content").style.display = "none";
@@ -478,7 +485,10 @@
         }
 
         async function sendEvent(body) {
-            if (localStorage.getItem("plausible_ignore") == "true") return;
+            if (
+                localStorage.getItem("plausible_ignore") == "true" ||
+                window.location.origin !== "https://www.greenfielddemo.com"
+            ) return;
             const _body = {
                 w: window.innerWidth,
                 d: window.location.hostname,
