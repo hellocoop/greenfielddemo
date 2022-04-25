@@ -220,14 +220,6 @@
 
         let data, id_token;
 
-        (function () {
-            window.onpageshow = function (event) {
-                if (event.persisted) {
-                    window.location.reload();
-                }
-            };
-        })();
-
         window.onload = async () => {
             if ($("loader")) removeLoader(); //Remove loading if comes back to the page after leaving from a loading state
             const params = new URLSearchParams(window.location.hash.substring(1));
