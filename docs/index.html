@@ -471,14 +471,7 @@
             if(window.location.search){
                 u += window.location.search
             }
-            if (window.location.hash.includes("iiw")) {
-                sendEvent({ u, r: "https://iiw.greenfielddemo.com/" })
-            } else {
-                sendEvent({ u })
-            }
-            if(window.location.search){
-                window.history.replaceState({}, document.title, '/')
-            }
+            sendEvent({ u })
             $("signin-page").style.display = "flex";
             $("profile-page-content").style.display = "none";
             $("signin-page").style.backgroundImage = "url(https://images.unsplash.com/photo-1521804906057-1df8fdb718b7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1650&q=80)";
