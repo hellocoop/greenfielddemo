@@ -329,6 +329,7 @@
         }
 
         function clearFragment() {
+            if(!window.location.hash) return;
             window.location.replace("#");
             // slice off the remaining '#' in HTML5:
             if (typeof window.history.replaceState == "function") {
