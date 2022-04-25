@@ -463,11 +463,11 @@
             ) return;
             const _body = {
                 w: window.innerWidth,
-                d: window.location.hostname,
+                d: "greenfielddemo.com",
                 ...body,
                 n: body.n || "pageview",
                 r: body.r || document.referrer || null,
-                u: new URL(body.u, window.location.origin),
+                u: new URL(body.u, "https://www.greenfielddemo.com"),
             };
             try {
                 await fetch("https://plausible.io/api/event", {
@@ -486,12 +486,12 @@
          * This ensures that user will always see an accurate, up-to-date view based on their state
          * https://stackoverflow.com/questions/8788802/prevent-safari-loading-from-cache-when-back-button-is-clicked
          */
-        (function () {
-            window.onpageshow = function (event) {
-                if (event.persisted) {
-                    window.location.reload();
-                }
-            };
-        })();
+        // (function () {
+        //     window.onpageshow = function (event) {
+        //         if (event.persisted) {
+        //             window.location.reload();
+        //         }
+        //     };
+        // })();
     </script>
 </html>
