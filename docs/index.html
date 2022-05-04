@@ -215,7 +215,7 @@
     <script>
         const $ = (id) => document.getElementById(id);
 
-        const CONSENT_BASE = "https://consent.hello.coop";
+        const AUTHORIZATION_ENDPOINT = "https://consent.hello.coop";
         const CLIENT_ID = "3574f001-0874-4b20-bffd-8f3e37634274";
 
         let data, id_token;
@@ -281,7 +281,7 @@
         async function getInfo() {
             showLoader();
             const nonce = sessionStorage.getItem("nonce");
-            data = await fetch(CONSENT_BASE + "/oauth/introspect", {
+            data = await fetch(AUTHORIZATION_ENDPOINT + "/oauth/introspect", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
@@ -423,7 +423,7 @@
             const nonce = uuidv4();
             sessionStorage.setItem("nonce", nonce);
 
-            const url = new URL(CONSENT_BASE);
+            const url = new URL(AUTHORIZATION_ENDPOINT);
             url.searchParams.append("client_id", CLIENT_ID);
             url.searchParams.append("redirect_uri", window.location.origin + window.location.pathname);
             url.searchParams.append("nonce", nonce);
