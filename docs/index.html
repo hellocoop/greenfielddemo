@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href="https://cdn.hello.coop/images/greenfield-logo.png" />
         <link href="https://cdn.hello.coop/css/tailwind.css" rel="stylesheet" />
-        <link rel="stylesheet" type="text/css" href="https://cdn.hello.coop/css/hello-button.css" />
+        <link rel="stylesheet" type="text/css" href="https://cdn.hello.coop/css/hello-button-test.css" />
         <style>
             body{
                 min-width: 350px;
@@ -413,11 +413,11 @@
 
         async function signin({ profile_update = false } = {}) {
             if (!profile_update) {
-                showLoader("signin");
+                $('continue').classList.add('hello-btn-loader')
                 await sendEvent({ u: "/start/login", n: "action" });
             } else {
+                $('update-profile').classList.add('hello-btn-loader')
                 await sendEvent({ u: "/update-profile", n: "action" });
-                showLoader();
             }
 
             const nonce = uuidv4();
