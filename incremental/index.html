@@ -4,9 +4,31 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Svelte + Vite App</title>
+    <title>Incremental Profile Demo</title>
+    <link rel="stylesheet" href="https://cdn.hello.coop/css/hello-button.css">
+    <style>
+      html, body {
+        height: 100%;
+      }
+      body {
+        min-width: 360px;
+        overflow-x: auto;
+      }
+      li {
+        list-style: none;
+      }
+      .animation-ping {
+        animation: _ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+      }
+      @keyframes _ping {
+        75%, 100% {
+          transform: scale(1.05);
+          opacity: 0;
+        }
+      }
+    </style>
   </head>
-  <body>
+  <body class="text-gray-700">
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
   </body>
