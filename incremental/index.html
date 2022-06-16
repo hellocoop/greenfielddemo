@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Incremental Profile Demo</title>
+    <link rel="stylesheet" href="https://cdn.hello.coop/css/tailwind.css">
+    <style>
+        html, body {
+            height: 100%;
+        }
+    </style>
+  </head>
+  <body class="text-gray-700">
+	<header class="h-56 w-full bg-green-300 flex justify-center">
+        <h1 class="mt-16 text-4xl font-semibold">Incremental Profile Demo</h1>
+    </header>
+    <main>
+        <section class="-mt-16 max-w-lg mx-auto space-y-4">
+            <ul class="rounded-2xl bg-white p-8 border-2 border-gray-700">
+                <div class="flex items-center justify-between">
+                    <label for="user-id" class="font-bold tracking-widest">USER ID</label>
+                    <button class="hover:underline">Log Out</button>
+                </div>
+                <span id="user-id" class="block text-xl mt-3">dc40a710-a2c7-4234-a5d4-9beca60c158b</span>
+            </ul>
+
+            <ul class="rounded-2xl bg-white p-8 border-2 border-gray-700">
+                <label for="user-id" class="font-bold tracking-widest">EMAIL</label>
+                <span id="user-id" class="block text-xl mt-3">john.smith@gmail.com</span>
+            </ul>
+
+            <ul class="rounded-2xl bg-white p-8 border-2 border-gray-700">
+                <label for="user-id" class="font-bold tracking-widest">PHONE</label>
+                <span id="user-id" class="block text-xl mt-3">+1 148 2839 123</span>
+            </ul>
+
+            <ul class="rounded-2xl bg-white p-8 border-2 border-gray-700">
+                <label for="user-id" class="font-bold tracking-widest">ETHEREUM ADDRESS</label>
+                <span id="user-id" class="block text-xl mt-3">0xb794f5ea0ba39494ce839613fffba779268</span>
+            </ul>
+        </section>
+    </main>
+  </body>
+</html>
