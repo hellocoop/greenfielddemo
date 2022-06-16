@@ -11,22 +11,26 @@
         html, body {
             height: 100%;
         }
+        body {
+            min-width: 360px;
+            overflow-x: auto;
+        }
         li {
             list-style: none;
         }
     </style>
   </head>
   <body class="text-gray-700">
-	<header class="fixed top-0 h-56 w-full bg-green-300 flex justify-center">
-        <h1 class="mt-16 text-3xl font-semibold">Incremental Profile Demo</h1>
+	<header class="fixed top-0 h-56 w-full bg-green-300 flex justify-center px-4">
+        <h1 class="mt-16 text-3xl font-semibold text-center">Incremental Profile Demo</h1>
     </header>
     <main class="z-50 relative pt-56 pb-20">
-        <section class="-mt-16 max-w-lg mx-auto space-y-4">
-            <!-- <li class="rounded-2xl bg-white p-10 border border-gray-700 flex items-center justify-center">
+        <section class="px-4 -mt-16 max-w-lg mx-auto space-y-4">
+            <li class="rounded-2xl bg-white p-10 border border-gray-700 flex items-center justify-center">
                 <button class="hello-btn-white-on-light">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
-            </li> -->
+            </li>
 
-            <li class="rounded-2xl bg-white p-8 border border-gray-700">
+            <li class="opacity-30 rounded-2xl bg-white p-8 border border-gray-700">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -36,12 +40,12 @@
                         </svg>
                         <label for="user-id" class="font-bold tracking-widest ml-2 uppercase">User ID</label>
                     </div>
-                    <button class="hover:underline font-medium">Log Out</button>
+                    <!-- <button class="hover:underline font-medium">Log Out</button> -->
                 </div>
-                <span id="user-id" class="block text-xl mt-3">dc40a710-a2c7-4234-a5d4-9beca60c158b</span>
+                <!-- <span id="user-id" class="block text-xl mt-3 break-all">dc40a710-a2c7-4234-a5d4-9beca60c158b</span> -->
             </li>
 
-            <li class="rounded-2xl bg-white p-8 border border-gray-700">
+            <li class="opacity-30 rounded-2xl bg-white p-8 border border-gray-700">
                 <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
@@ -49,32 +53,32 @@
                     </svg>
                     <label for="email" class="font-bold tracking-widest ml-2 uppercase">Email</label>
                 </div>
-                <ul id="email" class="text-xl mt-3 space-y-2">
-                    <li>
+                <!-- <ul id="email" class="text-xl mt-3 space-y-2">
+                    <li class="break-all">
                         john.smith@gmail.com
                     </li>
-                    <li>
+                    <li class="break-all">
                         not.john.smith@gmail.com
                     </li>
-                    <li>
+                    <li class="break-all">
                         really.not.john.smith@gmail.com
                     </li>
                 </ul>
-                <button class="hello-btn-white-on-light mt-3">ō&nbsp;&nbsp;&nbsp;Add another with Hellō</button>
+                <button class="hello-btn-white-on-light mt-3">ō&nbsp;&nbsp;&nbsp;Add another with Hellō</button> -->
             </li>
 
-            <li class="rounded-2xl bg-white p-8 border border-gray-700">
+            <li class="opacity-30 rounded-2xl bg-white p-8 border border-gray-700">
                 <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                     </svg>
                     <label for="phone" class="font-bold tracking-widest ml-2 uppercase">Phone</label>
                 </div>
-                <span id="phone" class="block text-xl mt-3">+1 148 2839 123</span>
-                <button class="hello-btn-white-on-light mt-3">ō&nbsp;&nbsp;&nbsp;Add another with Hellō</button>
+                <!-- <span id="phone" class="block text-xl mt-3 break-all">+1 148 2839 123</span> -->
+                <!-- <button class="hello-btn-white-on-light mt-3">ō&nbsp;&nbsp;&nbsp;Add another with Hellō</button> -->
             </li>
 
-            <li class="rounded-2xl bg-white p-8 border border-gray-700">
+            <li class="opacity-30 rounded-2xl bg-white p-8 border border-gray-700">
                 <div class="flex items-center">
                     <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
                         <title>Ethereum</title>
@@ -82,12 +86,13 @@
                     </svg>
                     <label for="ethereum-address" class="font-bold tracking-widest ml-2 uppercase">Ethereum Address</label>
                 </div>
-                <span id="ethereum-address" class="block text-xl mt-3">0xb794f5ea0ba39494ce839613fffba779268</span>
-                <button class="hello-btn-white-on-light mt-3">ō&nbsp;&nbsp;&nbsp;Add with Hellō</button>
+                <!-- <span id="ethereum-address" class="block text-xl mt-3 break-all">0xb794f5ea0ba39494ce839613fffba779268</span>
+                <button class="hello-btn-white-on-light mt-3">ō&nbsp;&nbsp;&nbsp;Add another with Hellō</button> -->
             </li>
         </section>
     </main>
-    <script></script>
-    
+    <script>
+        console.log(123)
+    </script>
   </body>
 </html>
