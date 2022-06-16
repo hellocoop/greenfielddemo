@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Incremental Profile Demo</title>
+    <link rel="stylesheet" href="https://cdn.hello.coop/css/tailwind.css">
+    <link rel="stylesheet" href="https://cdn.hello.coop/css/hello-button.css">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            min-width: 360px;
+            overflow-x: auto;
+        }
+        li {
+            list-style: none;
+        }
+        .animation-ping {
+            animation: _ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        @keyframes _ping {
+            75%, 100% {
+                transform: scale(1.05);
+                opacity: 0;
+            }
+        }
+    </style>
+  </head>
+  <body class="text-gray-700">
+	<header class="fixed top-0 h-56 w-full bg-green-300 flex justify-center px-4">
+        <h1 class="mt-16 text-3xl font-semibold text-center">Incremental Profile Demo</h1>
+    </header>
+    <main class="z-50 relative pt-56 pb-20">
+        <section class="px-4 -mt-16 max-w-lg mx-auto space-y-4">
+            <li id="hello-login-btn-container" class="relative rounded-2xl bg-white h-32 border border-gray-700 flex items-center justify-center">
+                <span class="animation-ping absolute rounded-2xl border border-gray-700 h-32 w-full"></span>
+                <button id="hello-login-btn" onclick="login()" class="hello-btn-white-on-light">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
+            </li>
+
+            <li id="user-id-container" class="opacity-30 rounded-2xl bg-white p-8 border border-gray-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M6.625 2.655A9 9 0 0119 11a1 1 0 11-2 0 7 7 0 00-9.625-6.492 1 1 0 11-.75-1.853zM4.662 4.959A1 1 0 014.75 6.37 6.97 6.97 0 003 11a1 1 0 11-2 0 8.97 8.97 0 012.25-5.953 1 1 0 011.412-.088z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M5 11a5 5 0 1110 0 1 1 0 11-2 0 3 3 0 10-6 0c0 1.677-.345 3.276-.968 4.729a1 1 0 11-1.838-.789A9.964 9.964 0 005 11zm8.921 2.012a1 1 0 01.831 1.145 19.86 19.86 0 01-.545 2.436 1 1 0 11-1.92-.558c.207-.713.371-1.445.49-2.192a1 1 0 011.144-.83z" clip-rule="evenodd" />
+                          <path fill-rule="evenodd" d="M10 10a1 1 0 011 1c0 2.236-.46 4.368-1.29 6.304a1 1 0 01-1.838-.789A13.952 13.952 0 009 11a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        <label for="user-id" class="font-bold tracking-widest ml-2 uppercase">User ID</label>
+                    </div>
+                    <button id="log-out-btn" style="display: none;" class="hover:underline font-medium">Log Out</button>
+                </div>
+                <span id="user-id" style="display: none;" class="block text-xl mt-3 break-all">dc40a710-a2c7-4234-a5d4-9beca60c158b</span>
+            </li>
+
+            <li id="email-container" class="opacity-30 rounded-2xl bg-white p-8 border border-gray-700">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                    </svg>
+                    <label for="email" class="font-bold tracking-widest ml-2 uppercase">Email</label>
+                </div>
+                <ul id="email" style="display: none;" class="text-xl mt-3 space-y-2">
+                    <li class="break-all">
+                        john.smith@gmail.com
+                    </li>
+                    <li class="break-all">
+                        not.john.smith@gmail.com
+                    </li>
+                    <li class="break-all">
+                        really.not.john.smith@gmail.com
+                    </li>
+                </ul>
+                <button style="display: none;" class="hello-btn-white-on-light mt-3">ō&nbsp;&nbsp;&nbsp;Add with Hellō</button>
+            </li>
+
+            <li id="phone-container" class="opacity-30 rounded-2xl bg-white p-8 border border-gray-700">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                    </svg>
+                    <label for="phone" class="font-bold tracking-widest ml-2 uppercase">Phone</label>
+                </div>
+                <span id="phone" style="display: none;" class="block text-xl mt-3 break-all">+1 148 2839 123</span>
+                <button style="display: none;" class="hello-btn-white-on-light mt-3">ō&nbsp;&nbsp;&nbsp;Add with Hellō</button>
+            </li>
+
+            <li id="ethereum-address-container" class="opacity-30 rounded-2xl bg-white p-8 border border-gray-700">
+                <div class="flex items-center">
+                    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
+                        <title>Ethereum</title>
+                        <path d="M11.944 17.97L4.58 13.62 11.943 24l7.37-10.38-7.372 4.35h.003zM12.056 0L4.69 12.223l7.365 4.354 7.365-4.35L12.056 0z"/>
+                    </svg>
+                    <label for="ethereum-address" class="font-bold tracking-widest ml-2 uppercase">Ethereum Address</label>
+                </div>
+                <span id="ethereum-address" style="display: none;" class="block text-xl mt-3 break-all">0xb794f5ea0ba39494ce839613fffba779268</span>
+                <button style="display: none;" class="hello-btn-white-on-light mt-3">ō&nbsp;&nbsp;&nbsp;Add with Hellō</button>
+            </li>
+        </section>
+    </main>
+    <script>
+        const config = {
+            AUTHORIZATION_ENDPOINT: 'https://consent.hello-dev.net/',
+            CLIENT_ID: '8b7ec5c4-2fb6-4b44-a4ce-55edf52a5e76'
+        }
+
+        const localState = Object.preventExtensions({
+            sub: '',
+            email: [],
+            phone: [],
+            ethereum: []
+        })
+
+        window.onload = async() => {
+            if(window.location.hash){
+                const params = new URLSearchParams(window.location.hash.substring(1))
+                if(params.has('id_token')){
+                    const url = new URL('/oauth/introspect', config.AUTHORIZATION_ENDPOINT)
+                    const body = {
+                        token: params.get('id_token'),
+                        client_id: config.CLIENT_ID,
+                        nonce: sessionStorage.nonce
+                    }
+                    sessionStorage.removeItem('nonce')
+                    try{
+                        const res = await fetch(url, {
+                            method: 'POST',
+                            mode: 'cors',
+                            cache: 'no-cache',
+                            headers: {
+                                'Content-type': 'application/x-www-form-urlencoded'
+                            },
+                            body: new URLSearchParams(body).toString()
+                        })
+                        const json = await res.json()
+                        if(!json.active) return; //TODO: throw error here
+                        console.info('Introspection Response:', JSON.stringify(json, null, 2))
+                        for(const key in localState){
+                            if(json[key]){
+                                if(key === 'sub'){
+                                    localState.sub = json[key] //not an array, so just assignment
+                                } else if(localState[key]){ //do not store keys other than what is in localState
+                                    localState[key].push(json[key])
+                                    localState[key] = [...new Set(localState[key])] //dedupe
+                                }
+                                sessionStorage.setItem('data', JSON.stringify(localState))
+                            }
+                        }
+                    } catch(err){
+                        console.error(err)
+                    }
+                }
+            }
+
+            if(sessionStorage.data){
+                let data;
+                try{
+                    data = JSON.parse(sessionStorage.data) 
+                } catch(err){
+                    console.error(err)
+                    sessionStorage.removeItem('data')
+                }
+                for(const key in data){
+                    if(localState[key]) { //do not store keys other than what is in localState
+                        localState[key] = data[key]
+                    }
+                }
+                let hideLoginState = false
+                for(const key in localState){
+                    if(key === 'sub'){
+                        if(localState.sub) {
+                            hideLoginState = true
+                            document.querySelector('#log-out-btn').style.display = 'inline'
+                            document.querySelector('#user-id').style.display = 'block'
+                        }
+                    } else if(localState[key]){
+                        if(localState[key].length) hideLoginState = true
+                    }
+                }
+                if(hideLoginState){
+                    document.querySelector('#hello-login-btn-container').style.display = 'none'
+                    const nodes = document.querySelectorAll("[id$='-container']");
+                    for(const node of nodes){
+                        node.classList.remove('opacity-30')
+                        const helloButtonNodes = document.querySelectorAll(".hello-btn-white-on-light")
+                        for (const button of helloButtonNodes){
+                            button.style.display = 'inline'
+                        }
+                    }
+                }
+            }
+        }
+        
+        function login(){
+            const loginButtonRef = document.querySelector('#hello-login-btn')
+            const nonce = makeNonce()
+            sessionStorage.setItem('nonce', nonce) //needed later for introspection call
+            loginButtonRef.disabled = true
+            loginButtonRef.classList.add('hello-btn-loader')
+            const url = new URL(config.AUTHORIZATION_ENDPOINT)    
+            url.searchParams.set('scope', 'openid')
+            url.searchParams.set('client_id', config.CLIENT_ID)
+            url.searchParams.set('nonce', nonce)
+            url.searchParams.set('redirect_uri', 'http://127.0.0.1:8080/')
+            url.searchParams.set('response_type', 'id_token')
+            window.location.href = url.href
+        }
+
+        function makeNonce() {
+            return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16));
+        }
+    </script>
+  </body>
+</html>
