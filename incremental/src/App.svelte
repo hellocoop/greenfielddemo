@@ -26,6 +26,17 @@
 	}
 
 	onMount(async()=>{
+		if(sessionStorage.data){
+			try{
+				const parsedData = JSON.parse(sessionStorage.data)
+				for(const key in parsedData){
+					localState[key] = parsedData[key]
+				}
+			} catch(err){
+				console.error(err)
+				sessionStorage.removeItem('data')
+			}
+		}
 		if(window.location.hash){
 			const params = new URLSearchParams(window.location.hash.substring(1))
 			if(params.has('id_token')){
@@ -48,28 +59,21 @@
 					})
 					const json = await res.json()
 					// if(!json.active) //TODO: throw error here
-					sessionStorage.setItem('data', JSON.stringify(json))
+					for(const key in localState){
+						if(!json[key]) continue
+						if(Array.isArray(localState[key])){
+							localState[key].push(json[key])
+							localState[key] = [...new Set(localState[key])] //dedupe
+						} else{
+							localState[key] = json[key]
+						}
+					}
+					sessionStorage.setItem('data', JSON.stringify(localState))
 					console.info('Introspection Response:', JSON.stringify(json, null, 2))
 					history.replaceState(null, null, ' ')
 				} catch(err){
 					console.error(err)
 				}
-			}
-		}
-		if(sessionStorage.data){
-			try{
-				const parsedData = JSON.parse(sessionStorage.data)
-				for(const key in localState){
-					if(key === 'sub'){
-						localState.sub = parsedData.sub
-					} else {
-						localState[key].concat([parsedData[key]])
-						parsedData[key] = [...new Set(parsedData[key])] //dedupe
-					}
-				}
-			} catch(err){
-				console.error(err)
-				sessionStorage.removeItem('data')
 			}
 		}
 	})
@@ -119,7 +123,7 @@
 		addPhoneAjax = true
 		const nonce = makeNonce()
 		sessionStorage.setItem('nonce', nonce) //needed later for introspection call
-		introspectionEndpoint.searchParams.set('scope', 'openid phone')
+		introspectionEndpoint.searchParams.set('scope', 'openid phone profile_update')
 		introspectionEndpoint.searchParams.set('nonce', nonce)
 		window.location.href = introspectionEndpoint.href
 	}
@@ -129,17 +133,17 @@
 		addEthereumAddressAjax = true
 		const nonce = makeNonce()
 		sessionStorage.setItem('nonce', nonce) //needed later for introspection call
-		introspectionEndpoint.searchParams.set('scope', 'openid ethereum')
+		introspectionEndpoint.searchParams.set('scope', 'openid ethereum profile_update')
 		introspectionEndpoint.searchParams.set('nonce', nonce)
 		window.location.href = introspectionEndpoint.href
 	}
 </script>
 
-<header class="fixed top-0 h-56 w-full bg-green-300 flex justify-center px-4">
+<header class="h-56 w-full bg-green-300 flex justify-center px-4">
   <h1 class="mt-16 text-3xl font-semibold text-center">Incremental Profile Demo</h1>
 </header>
-<main class="z-50 relative pt-56 pb-20">
-  <section class="px-4 -mt-16 max-w-lg mx-auto space-y-4">
+<main class="z-50 relative pb-20">
+  <section class="px-4 -mt-16 max-w-2xl mx-auto space-y-4">
 	{#if !isLoggedIn}
 		<li class="relative rounded-2xl bg-white h-32 border border-gray-700 flex items-center justify-center">
 			<button id="hello-login-btn" on:click={login} class:hello-btn-loader={loginAjax} class="hello-btn-white-on-light">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
@@ -161,7 +165,7 @@
 			{/if}
 		</div>
 		{#if isLoggedIn}
-			<span id="user-id" class="block text-xl mt-3 break-all">
+			<span id="user-id" class="block text-xl mt-3 break-all font-mono">
 				{localState.sub}
 			</span>
 		{/if}
@@ -191,7 +195,7 @@
 				class:hello-btn-loader={addEmailAjax}
 				class="hello-btn-white-on-light mt-3"
 			>
-				ō&nbsp;&nbsp;&nbsp;Add with Hellō
+				{@html localState.email.length ? 'ō&nbsp;&nbsp;&nbsp;Add another with Hellō' : 'ō&nbsp;&nbsp;&nbsp;Add with Hellō'}
 			</button>
 		{/if}
 	</li>
@@ -203,17 +207,22 @@
 			</svg>
 		<label for="phone" class="font-bold tracking-widest ml-2 uppercase">Phone</label>
 		</div>
-		{#if localState.phone?.length}
+		{#if localState.phone}
 			<ul id="phone" class="text-xl mt-3 space-y-2">
-				{#each localState.phone as phone}
-					<li class="break-all">
-						{phone}
-					</li>
-				{/each}
+				<li class="break-all">
+					{localState.phone}
+				</li>
 			</ul>
 		{/if}
 		{#if isLoggedIn}
-			<button on:click={addEmail} class="hello-btn-white-on-light mt-3">ō&nbsp;&nbsp;&nbsp;Add with Hellō</button>
+			<button
+				on:click={addPhone}
+				disabled={addPhoneAjax}
+				class:hello-btn-loader={addPhoneAjax}
+				class="hello-btn-white-on-light mt-3"
+			>
+				{@html localState.phone ? 'ō&nbsp;&nbsp;&nbsp;Update with Hellō' : 'ō&nbsp;&nbsp;&nbsp;Add with Hellō'}
+			</button>
 		{/if}
 	</li>
 
@@ -225,17 +234,22 @@
 			</svg>
 			<label for="ethereum-address" class="font-bold tracking-widest ml-2 uppercase">Ethereum Address</label>
 		</div>
-		{#if localState.phone?.length}
+		{#if localState.ethereum}
 			<ul id="ethereum-address" class="text-xl mt-3 space-y-2">
-				{#each localState.phone as phone}
-					<li class="break-all">
-						{phone}
-					</li>
-				{/each}
+				<li class="break-all font-mono">
+					{localState.ethereum}
+				</li>
 			</ul>
 		{/if}
 		{#if isLoggedIn}
-			<button class="hello-btn-white-on-light mt-3">ō&nbsp;&nbsp;&nbsp;Add with Hellō</button>
+			<button
+				on:click={addEthereumAddress}
+				disabled={addEthereumAddressAjax}
+				class:hello-btn-loader={addEthereumAddressAjax}
+				class="hello-btn-white-on-light mt-3"
+			>
+				{@html localState.ethereum ? 'ō&nbsp;&nbsp;&nbsp;Update with Hellō' : 'ō&nbsp;&nbsp;&nbsp;Add with Hellō'}
+			</button>
 		{/if}
 	</li>
   </section>
