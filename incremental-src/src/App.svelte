@@ -28,7 +28,23 @@
 	}
 
 	let mounted = false
+	let darkMode = false
 	onMount(async()=>{
+		if (
+			window.matchMedia &&
+			window.matchMedia('(prefers-color-scheme: dark)').matches
+		) {
+			darkMode = true
+		}
+		window
+			.matchMedia('(prefers-color-scheme: dark)')
+			.addEventListener('change', (event) => {
+				if (event.matches) {
+					darkMode = true
+				} else {
+					darkMode = false
+				}
+		})
 		if(sessionStorage.data){
 			try{
 				const parsedData = JSON.parse(sessionStorage.data)
@@ -163,19 +179,19 @@
 {/if}
 
 <header class="h-56 w-full flex justify-center px-4 bg-top bg-no-repeat bg-cover from-red-500 to-transparent" style="background-image: url(banner.jpeg);">
-	<h1 class="mt-16 text-3xl font-semibold text-center z-50">Incremental Profile Demo</h1>
-	<span class="absolute w-full left-0 h-56 bg-gradient-to-b from-transparent to-white"></span>
+	<h1 class="mt-16 text-3xl font-semibold text-center z-50 text-gray-700 dark:text-white">Incremental Profile Demo</h1>
+	<span class="absolute w-full left-0 h-56 bg-gradient-to-b from-transparent to-white dark:to-[#161616]"></span>
 </header>
 {#if mounted}
 	<main class="z-50 relative pb-20">	
 	<section class="px-4 -mt-16 max-w-2xl mx-auto space-y-4">
 		{#if !isLoggedIn}
-			<li class="relative rounded-2xl bg-white shadow-lg p-8 flex items-center justify-center">
-				<button id="hello-login-btn" on:click={login} class:hello-btn-loader={loginAjax} class="hello-btn-white-on-light">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
+			<li class="relative rounded-2xl bg-white dark:bg-[#262626] shadow-lg p-8 flex items-center justify-center">
+				<button id="hello-login-btn" on:click={login} class:hello-btn-loader={loginAjax} class="{darkMode ? "hello-btn-black-on-dark hello-btn-hover-flare" : "hello-btn-white-on-light"}">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
 			</li>
 		{/if}
 
-		<li in:fly={{y: 40, delay: 0}} class:opacity-30={!isLoggedIn} class="rounded-2xl bg-white shadow-lg p-8">
+		<li in:fly={{y: 40, delay: 0}} class:opacity-30={!isLoggedIn} class="rounded-2xl bg-white dark:bg-[#262626] shadow-lg p-8">
 			<div class="flex items-center justify-between">
 				<div class="flex items-center">
 					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -196,7 +212,7 @@
 			{/if}
 		</li>
 
-		<li in:fly={{y: 40, delay: 100}} class:opacity-30={!isLoggedIn} class="opacity-30 rounded-2xl bg-white shadow-lg p-8">
+		<li in:fly={{y: 40, delay: 100}} class:opacity-30={!isLoggedIn} class="opacity-30 rounded-2xl bg-white dark:bg-[#262626] shadow-lg p-8">
 			<div class="flex items-center">
 				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
 					<path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
@@ -218,14 +234,14 @@
 					on:click={addEmail}
 					disabled={addEmailAjax}
 					class:hello-btn-loader={addEmailAjax}
-					class="hello-btn-white-on-light mt-3"
+					class="{darkMode ? "hello-btn-white-and-static" : "hello-btn-white-on-light"} mt-3"
 				>
 					{@html localState.email.length ? 'ō&nbsp;&nbsp;&nbsp;Add another with Hellō' : 'ō&nbsp;&nbsp;&nbsp;Add with Hellō'}
 				</button>
 			{/if}
 		</li>
 
-		<li in:fly={{y: 40, delay: 200}} class:opacity-30={!isLoggedIn} class="opacity-30 rounded-2xl bg-white shadow-lg p-8">
+		<li in:fly={{y: 40, delay: 200}} class:opacity-30={!isLoggedIn} class="opacity-30 rounded-2xl bg-white dark:bg-[#262626] shadow-lg p-8">
 			<div class="flex items-center">
 				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
 					<path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
@@ -244,17 +260,16 @@
 					on:click={addPhone}
 					disabled={addPhoneAjax}
 					class:hello-btn-loader={addPhoneAjax}
-					class="hello-btn-white-on-light mt-3"
+					class="{darkMode ? "hello-btn-white-and-static" : "hello-btn-white-on-light"} mt-3"
 				>
 					{@html localState.phone ? 'ō&nbsp;&nbsp;&nbsp;Update with Hellō' : 'ō&nbsp;&nbsp;&nbsp;Add with Hellō'}
 				</button>
 			{/if}
 		</li>
 
-		<li in:fly={{y: 40, delay: 300}} class:opacity-30={!isLoggedIn} class="opacity-30 rounded-2xl bg-white shadow-lg p-8">
+		<li in:fly={{y: 40, delay: 300}} class:opacity-30={!isLoggedIn} class="opacity-30 rounded-2xl bg-white dark:bg-[#262626] shadow-lg p-8">
 			<div class="flex items-center">
-				<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
-					<title>Ethereum</title>
+				<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor">
 					<path d="M11.944 17.97L4.58 13.62 11.943 24l7.37-10.38-7.372 4.35h.003zM12.056 0L4.69 12.223l7.365 4.354 7.365-4.35L12.056 0z"/>
 				</svg>
 				<label for="ethereum-address" class="font-bold tracking-widest ml-2 uppercase">Ethereum Address</label>
@@ -271,7 +286,7 @@
 					on:click={addEthereumAddress}
 					disabled={addEthereumAddressAjax}
 					class:hello-btn-loader={addEthereumAddressAjax}
-					class="hello-btn-white-on-light mt-3"
+					class="{darkMode ? "hello-btn-white-and-static" : "hello-btn-white-on-light"} mt-3"
 				>
 					{@html localState.ethereum ? 'ō&nbsp;&nbsp;&nbsp;Update with Hellō' : 'ō&nbsp;&nbsp;&nbsp;Add with Hellō'}
 				</button>
