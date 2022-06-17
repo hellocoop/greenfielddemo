@@ -7,11 +7,20 @@
     <title>Incremental Profile Demo</title>
     <link rel="stylesheet" href="https://cdn.hello.coop/css/hello-button.css">
     <script defer data-domain="greenfielddemo.com" src="https://plausible.io/js/plausible.js"></script>
-    <script type="module" crossorigin src="./assets/index.3d379e25.js"></script>
+    <script type="module" crossorigin src="./assets/index.e279edc1.js"></script>
     <link rel="stylesheet" href="./assets/index.b6353fca.css">
   </head>
   <body class="text-gray-700">
     <div id="app"></div>
     
+    <script>
+      (function () {
+            window.onpageshow = function (event) {
+                if (event.persisted) {
+                    window.location.reload();
+                }
+            };
+        })();
+    </script>
   </body>
 </html>

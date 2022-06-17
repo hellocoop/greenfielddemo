@@ -17,7 +17,7 @@
 
 	const introspectionEndpoint = new URL(config.AUTHORIZATION_ENDPOINT)
 	introspectionEndpoint.searchParams.set('client_id', config.CLIENT_ID)
-	introspectionEndpoint.searchParams.set('redirect_uri', window.location.origin + '/')
+	introspectionEndpoint.searchParams.set('redirect_uri', window.location.origin + window.location.pathname)
 	introspectionEndpoint.searchParams.set('response_type', 'id_token')
 
 	$: {
