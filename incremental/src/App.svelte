@@ -2,8 +2,8 @@
 	import {onMount} from 'svelte'
 	import {fly} from 'svelte/transition'
 	const config = {
-		AUTHORIZATION_ENDPOINT: 'https://consent.hello-dev.net/',
-		CLIENT_ID: '64397239-c6af-4765-a2b3-e0f90d75157a'
+		AUTHORIZATION_ENDPOINT: 'https://consent.hello.coop/',
+		CLIENT_ID: '1693bedb-58ac-4ba1-a95b-a72effc71dfb'
 	}
 
 	const localState = Object.preventExtensions({
