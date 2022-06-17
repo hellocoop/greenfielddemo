@@ -1,6 +1,6 @@
 <script>
 	import {onMount} from 'svelte'
-	import {fly} from 'svelte/transition'
+	import {fly, slide} from 'svelte/transition'
 	const config = {
 		AUTHORIZATION_ENDPOINT: 'https://consent.hello.coop/',
 		CLIENT_ID: '1693bedb-58ac-4ba1-a95b-a72effc71dfb'
@@ -14,6 +14,7 @@
 	})
 
 	let isLoggedIn = false
+	let notification = '' // for showing errors
 
 	const introspectionEndpoint = new URL(config.AUTHORIZATION_ENDPOINT)
 	introspectionEndpoint.searchParams.set('client_id', config.CLIENT_ID)
@@ -72,11 +73,20 @@
 					}
 					sessionStorage.setItem('data', JSON.stringify(localState))
 					console.info('Introspection Response:', JSON.stringify(json, null, 2))
-					history.replaceState(null, null, ' ')
 				} catch(err){
 					console.error(err)
 				}
 			}
+			if(params.has('error')){
+				const errorMap = {
+					access_denied: 'User cancelled request'
+				}
+				const errorMsg = params.get('error')
+				if(errorMap[errorMsg]){
+					notification = errorMap[errorMsg]
+				}
+			}
+			history.replaceState(null, null, ' ')
 		}
 		mounted = true //for triggering the fly in animations
 	})
@@ -137,6 +147,20 @@
 		window.location.href = introspectionEndpoint.href
 	}
 </script>
+
+{#if notification}
+	<div class="bg-red-500 h-12 px-4 text-white text-center flex items-center justify-between" transition:slide>
+		<span class="w-8" />
+		<span>{notification}</span>
+		<span class="w-8 inline-flex items-center justify-center">
+			<button on:click={()=>notification = ''}>
+				<svg xmlns="http://www.w3.org/2000/svg" class="h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+		  			<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+				</svg>
+			</button>
+		</span>
+	</div>
+{/if}
 
 <header class="h-56 w-full flex justify-center px-4 bg-top bg-no-repeat bg-cover from-red-500 to-transparent" style="background-image: url(banner.jpeg);">
 	<h1 class="mt-16 text-3xl font-semibold text-center z-50">Incremental Profile Demo</h1>
