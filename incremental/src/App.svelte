@@ -138,8 +138,9 @@
 	}
 </script>
 
-<header class="h-56 w-full bg-green-300 flex justify-center px-4">
-  <h1 class="mt-16 text-3xl font-semibold text-center">Incremental Profile Demo</h1>
+<header class="h-56 w-full flex justify-center px-4 bg-top bg-no-repeat bg-cover from-red-500 to-transparent" style="background-image: url(banner.jpeg);">
+	<h1 class="mt-16 text-3xl font-semibold text-center z-50">Incremental Profile Demo</h1>
+	<span class="absolute w-full left-0 h-56 bg-gradient-to-b from-transparent to-white"></span>
 </header>
 {#if mounted}
 	<main class="z-50 relative pb-20">	
