@@ -240,7 +240,7 @@
                     $("error-container").style.display = "block";
                     switch (user_data.error) {
                         case "access_denied":
-                            $("error").innerText = "User denied access.";
+                            $("error").innerText = "User cancelled request.";
                             break;
                         default:
                             $("error").innerText = "Something went wrong.";
