@@ -2,17 +2,22 @@
 	import {onMount} from 'svelte'
 	const config = {
 		AUTHORIZATION_ENDPOINT: 'https://consent.hello-dev.net/',
-		CLIENT_ID: '8b7ec5c4-2fb6-4b44-a4ce-55edf52a5e76'
+		CLIENT_ID: '64397239-c6af-4765-a2b3-e0f90d75157a'
 	}
 
 	const localState = Object.preventExtensions({
 		sub: '',
 		email: [],
-		phone: [],
-		ethereum: []
+		phone: '',
+		ethereum: ''
 	})
 
 	let isLoggedIn = false
+
+	const introspectionEndpoint = new URL(config.AUTHORIZATION_ENDPOINT)
+	introspectionEndpoint.searchParams.set('client_id', config.CLIENT_ID)
+	introspectionEndpoint.searchParams.set('redirect_uri', window.location.origin + '/')
+	introspectionEndpoint.searchParams.set('response_type', 'id_token')
 
 	$: {
 		if(localState.sub) isLoggedIn = true
@@ -86,6 +91,48 @@
 		url.searchParams.set('response_type', 'id_token')
 		window.location.href = url.href
 	}
+
+	function logout(){
+		sessionStorage.clear()
+		isLoggedIn = false
+		for (const key in localState){
+			if(Array.isArray(localState[key])){
+				localState[key] = []
+			} else{
+				localState[key] = ''
+			}
+		}
+	}
+
+	let addEmailAjax = false
+	function addEmail(){
+		addEmailAjax = true
+		const nonce = makeNonce()
+		sessionStorage.setItem('nonce', nonce) //needed later for introspection call
+		introspectionEndpoint.searchParams.set('scope', 'openid email profile_update')
+		introspectionEndpoint.searchParams.set('nonce', nonce)
+		window.location.href = introspectionEndpoint.href
+	}
+
+	let addPhoneAjax = false
+	function addPhone(){
+		addPhoneAjax = true
+		const nonce = makeNonce()
+		sessionStorage.setItem('nonce', nonce) //needed later for introspection call
+		introspectionEndpoint.searchParams.set('scope', 'openid phone')
+		introspectionEndpoint.searchParams.set('nonce', nonce)
+		window.location.href = introspectionEndpoint.href
+	}
+
+	let addEthereumAddressAjax = false
+	function addEthereumAddress(){
+		addEthereumAddressAjax = true
+		const nonce = makeNonce()
+		sessionStorage.setItem('nonce', nonce) //needed later for introspection call
+		introspectionEndpoint.searchParams.set('scope', 'openid ethereum')
+		introspectionEndpoint.searchParams.set('nonce', nonce)
+		window.location.href = introspectionEndpoint.href
+	}
 </script>
 
 <header class="fixed top-0 h-56 w-full bg-green-300 flex justify-center px-4">
@@ -95,7 +142,6 @@
   <section class="px-4 -mt-16 max-w-lg mx-auto space-y-4">
 	{#if !isLoggedIn}
 		<li class="relative rounded-2xl bg-white h-32 border border-gray-700 flex items-center justify-center">
-			<span class="animation-ping absolute rounded-2xl border border-gray-700 h-32 w-full"></span>
 			<button id="hello-login-btn" on:click={login} class:hello-btn-loader={loginAjax} class="hello-btn-white-on-light">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
 		</li>
 	{/if}
@@ -111,7 +157,7 @@
 				<label for="user-id" class="font-bold tracking-widest ml-2 uppercase">User ID</label>
 			</div>
 			{#if isLoggedIn}
-				<button id="log-out-btn" class="hover:underline font-medium">Log Out</button>
+				<button on:click={logout} id="log-out-btn" class="hover:underline font-medium">Log Out</button>
 			{/if}
 		</div>
 		{#if isLoggedIn}
@@ -138,7 +184,16 @@
 				{/each}
 			</ul>
 		{/if}
-		<button class="hello-btn-white-on-light mt-3">ō&nbsp;&nbsp;&nbsp;Add with Hellō</button>
+		{#if isLoggedIn}
+			<button
+				on:click={addEmail}
+				disabled={addEmailAjax}
+				class:hello-btn-loader={addEmailAjax}
+				class="hello-btn-white-on-light mt-3"
+			>
+				ō&nbsp;&nbsp;&nbsp;Add with Hellō
+			</button>
+		{/if}
 	</li>
 
 	<li class:opacity-30={!isLoggedIn} class="opacity-30 rounded-2xl bg-white p-8 border border-gray-700">
@@ -157,7 +212,9 @@
 				{/each}
 			</ul>
 		{/if}
-		<button class="hello-btn-white-on-light mt-3">ō&nbsp;&nbsp;&nbsp;Add with Hellō</button>
+		{#if isLoggedIn}
+			<button on:click={addEmail} class="hello-btn-white-on-light mt-3">ō&nbsp;&nbsp;&nbsp;Add with Hellō</button>
+		{/if}
 	</li>
 
 	<li class:opacity-30={!isLoggedIn} class="opacity-30 rounded-2xl bg-white p-8 border border-gray-700">
