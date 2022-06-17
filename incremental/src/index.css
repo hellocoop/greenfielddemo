@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+    height: 100%;
+}
+body {
+    min-width: 360px;
+    overflow-x: auto;
+}
+li {
+    list-style: none;
+}
