@@ -40,6 +40,9 @@
                 #signin-page {
                     justify-content: start !important;
                 }
+                #requires-container{
+                    background: transparent !important;
+                }
             }
             .shadow-medium {
                 box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
@@ -63,6 +66,9 @@
                 }
                 #profile-page{
                     background-color: white;
+                }
+                #requires-container{
+                    background: #eeecec;
                 }
             }
 
@@ -89,6 +95,9 @@
                 }
                 .metric-card{
                     color: #303030;
+                }
+                #requires-container{
+                    background: #222;
                 }
             }
         </style>
@@ -123,25 +132,29 @@
                     <img src="https://cdn.hello.coop/images/greenfield-logo.png" alt="greenfield fitness" class="h-12" />
                     <span class="text-2xl ml-2 font-medium">Greenfield Fitness</span>
                 </div>
-                <p class="text-sm opacity-60 mt-2">A virtual personal trainer and nutritionist in one, with hundreds of workouts to tackle at home, plus personalized meal plans and recipes.</p>
-                <div class="my-8 space-y-4 text-left">
-                    <div class="flex items-center">
-                        <img src="assets/1.svg" class="h-16" />
-                        <h2 class="ml-4 opacity-60">Advanced metrics, health and activity monitoring</h2>
-                    </div>
-                    <div class="flex items-center">
-                        <img src="assets/2.svg" class="h-16" />
-                        <h2 class="ml-4 opacity-60">Daily workout exercise sessions</h2>
-                    </div>
-                    <div class="flex items-center">
-                        <img src="assets/3.svg" class="h-16" />
-                        <h2 class="ml-4 opacity-60">Daily yoga workout plans</h2>
-                    </div>
-                    <div class="flex items-center">
-                        <img src="assets/4.svg" class="h-16" />
-                        <h2 class="ml-4 opacity-60">Effective diet plans exclusive to you</h2>
-                    </div>
+                
+                <p class="text-sm opacity-60 mt-2">
+                    This is a demonstration app for you to experience how an app could use Hellō for registration.
+                </p>
+                
+                <div class="flex items-center justify-around my-6">
+                    <img src="assets/1.svg" class="h-14" />
+                    <img src="assets/2.svg" class="h-14" />
+                    <img src="assets/3.svg" class="h-14" />
+                    <img src="assets/4.svg" class="h-14" />
                 </div>
+
+                <div id="requires-container" class="text-left rounded-md p-3 mb-6">
+                    <span class="font-semibold">Greenfield Fitness requires:</span>
+                    <ul class="ml-4 my-2 space-y-2 list-disc list-inside">
+                        <li>Full Name</li>
+                        <li>Preferred Name</li>
+                        <li>Verified Email</li>
+                        <li>Profile Picture</li>
+                    </ul>
+                    <span class="font-semibold">To use the app</span>
+                </div>
+
                 <button onclick="signin()" id="continue"
                     class="hello-btn-black-and-static"
                 >
