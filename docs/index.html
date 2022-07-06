@@ -41,7 +41,10 @@
                     justify-content: start !important;
                 }
                 #requires-container{
-                    background: transparent !important;
+                    background: rgba(34, 34, 34, 0.7) !important;
+                }
+                .text-gray-light{
+                    color: #aeaeae !important;
                 }
             }
             .shadow-medium {
@@ -68,7 +71,10 @@
                     background-color: white;
                 }
                 #requires-container{
-                    background: #eeecec;
+                    background: rgba(236, 236, 236, 0.7);
+                }
+                .text-gray-light{
+                    color: #808080;
                 }
             }
 
@@ -97,7 +103,10 @@
                     color: #303030;
                 }
                 #requires-container{
-                    background: #222;
+                    background: rgba(34, 34, 34, 0.7);
+                }
+                .text-gray-light{
+                    color: #aeaeae;
                 }
             }
         </style>
@@ -130,10 +139,10 @@
             <section id="login-card" class="relative z-40 bg-white flex flex-col rounded-md p-6 text-center" style="width: 26rem;">
                 <div class="flex items-center justify-center">
                     <img src="https://cdn.hello.coop/images/greenfield-logo.png" alt="greenfield fitness" class="h-12" />
-                    <span class="text-2xl ml-2 font-medium">Greenfield Fitness</span>
+                    <span class="text-2xl ml-2 font-medium ">Greenfield Fitness</span>
                 </div>
                 
-                <p class="text-sm opacity-60 mt-2">
+                <p class="text-sm mt-2 text-gray-light">
                     This is a demonstration app for you to experience how an app could use Hellō for registration.
                 </p>
                 
@@ -144,15 +153,14 @@
                     <img src="assets/4.svg" class="h-14" />
                 </div>
 
-                <div id="requires-container" class="text-left rounded-md p-4 mb-6">
-                    <span class="font-semibold">Greenfield Fitness requires:</span>
-                    <ul class="ml-4 my-2 space-y-2 list-disc list-inside">
+                <div id="requires-container" class="text-left rounded-md p-4 mb-6 w-3/4 mx-auto">
+                    <span class="font-medium text-sm text-gray-light">Greenfield Fitness requires:</span>
+                    <ul class="ml-4 my-2 space-y-2 list-disc list-inside text-sm text-gray-light">
                         <li>Full Name</li>
                         <li>Preferred Name</li>
                         <li>Verified Email</li>
                         <li>Profile Picture</li>
                     </ul>
-                    <span class="font-semibold">To use the app</span>
                 </div>
 
                 <button onclick="signin()" id="continue"
