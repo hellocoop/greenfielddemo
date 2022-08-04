@@ -2,7 +2,7 @@
 	import {onMount} from 'svelte'
 	import {fly, slide} from 'svelte/transition'
 	const config = {
-		AUTHORIZATION_ENDPOINT: 'https://consent.hello.coop/',
+		AUTHORIZATION_ENDPOINT: 'https://wallet.hello.coop/authorize',
 		CLIENT_ID: '1693bedb-58ac-4ba1-a95b-a72effc71dfb'
 	}
 
