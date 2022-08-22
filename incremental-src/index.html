@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Incremental Profile Demo</title>
+    <link rel="stylesheet" href="https://cdn.hello.coop/css/hello-button.css">
+    <script defer data-domain="greenfielddemo.com" src="https://plausible.io/js/plausible.js"></script>
+    <style>
+      @media (prefers-color-scheme: light) {
+        html{
+          color-scheme: light;
+        }
+      }
+      @media (prefers-color-scheme: dark) {
+        html{
+          color-scheme: dark;
+        }
+      }
+    </style>
+  </head>
+  <body class="text-gray-700 dark:text-[#f4f4f4] bg-white dark:bg-[#161616]">
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+    <script>
+      (function () {
+            window.onpageshow = function (event) {
+                if (event.persisted) {
+                    window.location.reload();
+                }
+            };
+        })();
+    </script>
+  </body>
+</html>
