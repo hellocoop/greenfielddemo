@@ -115,6 +115,30 @@
                     color: #aeaeae;
                 }
             }
+            .hello-about {
+                margin-top: 16px;
+                display: inline-flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+                outline: 0;
+            }
+            .hello-about::before {
+                content: "Hellō lets you control your identity";
+                text-decoration: underline;
+            }
+            .hello-about:hover::after, .hello-about:focus::after {
+                content: "Hellō lets you choose your preferred provider, and change your choice. Verify your identity once. Share what you want to share.";
+                position: absolute;
+                background-color: #303030;
+                top: 32px;
+                padding: 6px;
+                border-radius: 6px;
+                font-size: 0.92rem;
+                width: 150%;
+                border: 1px solid #808080;
+            }
         </style>
     </head>
     <body>
@@ -168,12 +192,15 @@
                         <li>Profile Picture</li>
                     </ul>
                 </div>
-
-                <button onclick="signin()" id="continue"
-                    class="hello-btn-black-and-static"
-                >
-                    ō&nbsp;&nbsp;&nbsp;Continue with Hellō
-                </button>
+                
+                <div>
+                    <button onclick="signin()" id="continue"
+                        class="hello-btn-black-and-static w-full"
+                    >
+                        ō&nbsp;&nbsp;&nbsp;Continue with Hellō
+                    </button>
+                    <button class="hello-about"/>
+                </div>
             </section>
         </div>
         <div id="profile-page" class="h-screen" style="display: none;">
