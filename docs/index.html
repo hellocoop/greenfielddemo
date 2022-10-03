@@ -322,8 +322,8 @@
             }
         })
         //Language change event
-        window.addEventListener('languagechange', hydrate)
-        const langObserver = new MutationObserver(hydrate)
+        window.addEventListener('languagechange', hydrateContainer)
+        const langObserver = new MutationObserver(hydrateContainer)
         langObserver.observe(containerRef, {attributes: true, attributeFilter : ['lang']})
         function toggleAboutBubble() {
             if(showAboutBubble) {
