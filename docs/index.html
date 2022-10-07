@@ -286,18 +286,14 @@
                             $("error").innerText = "Something went wrong.";
                     }
                 }
-
-                if (sessionStorage.getItem("data")) {
-                    try {
-                        data = JSON.parse(sessionStorage.getItem("data"));
-                        hydrate();
-                        $("profile-page").style.display = $("profile-page-content").style.display = "block";
-                    } catch (err) {
-                        console.log(err);
-                        sessionStorage.removeItem("data");
-                        showSigninPage();
-                    }
-                } else {
+            } else if (sessionStorage.getItem("data")){
+                try {
+                    data = JSON.parse(sessionStorage.getItem("data"));
+                    hydrate();
+                    $("profile-page").style.display = $("profile-page-content").style.display = "block";
+                } catch (err) {
+                    console.log(err);
+                    sessionStorage.removeItem("data");
                     showSigninPage();
                 }
             } else {
