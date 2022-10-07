@@ -286,8 +286,7 @@
                             $("error").innerText = "Something went wrong.";
                     }
                 }
-            } 
-            if (sessionStorage.getItem("data")){
+            }  else if (sessionStorage.getItem("data")){
                 try {
                     data = JSON.parse(sessionStorage.getItem("data"));
                     hydrate();
