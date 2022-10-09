@@ -250,15 +250,15 @@
         const INTROSPECTION_ENDPOINT = "https://wallet.hello.coop/oauth/introspect";
         const CLIENT_ID = "3574f001-0874-4b20-bffd-8f3e37634274";
 
-        let data, id_token;
+        let data;
 
         window.onload = async () => {
             if ($("loader")) removeLoader(); //Remove loading if comes back to the page after leaving from a loading state
             const params = new URLSearchParams(window.location.hash.substring(1));
 
             if (params.has("id_token")) {
-                id_token = params.get("id_token");
-                getInfo();
+                const id_token = params.get("id_token");
+                getInfo(id_token);
             } else if (params.has("error")) {
                 user_data = {
                     error: params.get("error"),
@@ -286,7 +286,7 @@
                             $("error").innerText = "Something went wrong.";
                     }
                 }
-            }  else if (sessionStorage.getItem("data")){
+            } else if (sessionStorage.getItem("data")){
                 try {
                     data = JSON.parse(sessionStorage.getItem("data"));
                     hydrate();
@@ -306,32 +306,32 @@
             return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16));
         }
 
-        async function getInfo() {
+        async function getInfo(id_token) {
             showLoader();
             const nonce = sessionStorage.getItem("nonce");
-            data = await fetch(INTROSPECTION_ENDPOINT, {
+            await fetch(INTROSPECTION_ENDPOINT, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                 },
                 body: `id_token=${id_token}&nonce=${nonce}&client_id=${CLIENT_ID}`,
             })
-                .then((r) => r.json())
-                .then((data) => {
-                    return data;
-                })
-                .catch((err) => {
-                    console.error(err);
-                    removeLoader();
-                    showSigninPage();
-                });
-
-            sessionStorage.setItem("data", JSON.stringify(data));
-
-            sendEvent({ u: "/profile" });
-            hydrate();
-            $("profile-page").style.display = $("profile-page-content").style.display = "block";
-            removeLoader();
+            .then((r) => r.json())
+            .then((json) => {
+                if(!json.active) throw json
+                data = json
+                sessionStorage.setItem("data", JSON.stringify(data));
+                sendEvent({ u: "/profile" });
+                hydrate();
+                $("profile-page").style.display = $("profile-page-content").style.display = "block";
+            })
+            .catch((err) => {
+                console.error(err);
+                showSigninPage();
+            })
+            .finally(() => {
+                removeLoader();
+            })
         }
 
         function clearFragment() {
