@@ -286,16 +286,14 @@
                             $("error").innerText = "Something went wrong.";
                     }
                 }
-            } else if (sessionStorage.getItem("data")){
-                try {
-                    data = JSON.parse(sessionStorage.getItem("data"));
-                    hydrate();
-                    $("profile-page").style.display = $("profile-page-content").style.display = "block";
-                } catch (err) {
-                    console.log(err);
-                    sessionStorage.removeItem("data");
+
+                if(sessionStorage.getItem("data")){
+                    getInfoFromSessionStorage()
+                } else {
                     showSigninPage();
                 }
+            } else if (sessionStorage.getItem("data")){
+                getInfoFromSessionStorage()
             } else {
                 showSigninPage();
             }
@@ -304,6 +302,18 @@
 
         function uuidv4() {
             return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16));
+        }
+
+        function getInfoFromSessionStorage(){
+            try {
+                data = JSON.parse(sessionStorage.getItem("data"));
+                hydrate();
+                $("profile-page").style.display = $("profile-page-content").style.display = "block";
+            } catch (err) {
+                console.log(err);
+                sessionStorage.removeItem("data");
+                showSigninPage();
+            }
         }
 
         async function getInfo(id_token) {
