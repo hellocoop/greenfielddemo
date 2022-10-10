@@ -9,6 +9,9 @@
         <link rel="stylesheet" type="text/css" href="https://cdn.hello.coop/css/hello-btn.css" />
         <script src="https://cdn.hello.coop/js/hello-btn.js"></script>
         <style>
+            html, body{
+                height: 100%;
+            }
             body{
                 min-width: 350px;
                 overflow-x: auto;    
@@ -27,12 +30,9 @@
             @media only screen and (max-width: 500px) {
                 body {
                     padding: 0px !important;
-                    height: 100vh !important;
                     align-items: center !important;
                 }
                 section {
-                    background-color: transparent !important;
-                    color: white !important;
                     width: auto !important;
                 }
                 section h2 {
@@ -40,12 +40,6 @@
                 }
                 #signin-page {
                     justify-content: start !important;
-                }
-                #requires-container{
-                    background: rgba(34, 34, 34, 0.7) !important;
-                }
-                .text-gray-light{
-                    color: #aeaeae !important;
                 }
             }
             .shadow-medium {
@@ -121,7 +115,7 @@
             }
         </style>
     </head>
-    <body>
+    <body class="bg-no-repeat bg-cover">
         <div id="modal-container" class="fixed w-screen h-screen hidden items-center justify-center z-50">
             <div id="modal" class="p-4 rounded-md w-96 z-50 flex relative">
                 <div class="w-10 h-10 bg-red-500 bg-opacity-20 rounded-full inline-flex items-center justify-center">
@@ -144,7 +138,7 @@
             </div>
             <div onclick="closeModal()" class="fixed w-screen h-screen z-40 flex items-center justify-center bg-black bg-opacity-60"></div>
         </div>
-        <div id="signin-page" style="display: none;" class="md:px-10 md:py-16 h-screen flex flex-col justify-center items-center bg-no-repeat bg-cover">
+        <div id="signin-page" style="display: none;" class="p-4 md:px-10 md:py-16 h-auto flex flex-col justify-center items-center">
             <div class="bg-black w-full z-10 h-screen fixed inset-0 bg-opacity-50" aria-hidden="true"></div>
             <section id="login-card" class="relative z-40 bg-white flex flex-col rounded-md p-6 text-center" style="width: 26rem;">
                 <div class="flex items-center justify-center">
@@ -175,7 +169,7 @@
 
                 <div class="hello-container">
                     <button onclick="signin(event)" class="hello-btn hello-btn-black-on-light w-full"/>
-                    <button class="hello-about"/>
+                    <!-- <button class="hello-about"/> -->
                 </div>
             </section>
         </div>
@@ -490,7 +484,7 @@
             sendEvent({ u })
             $("signin-page").style.display = "flex";
             $("profile-page-content").style.display = "none";
-            $("signin-page").style.backgroundImage = "url(https://images.unsplash.com/photo-1521804906057-1df8fdb718b7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1650&q=80)";
+            document.body.style.backgroundImage = "url(https://images.unsplash.com/photo-1521804906057-1df8fdb718b7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1650&q=80)";
         }
 
         async function sendEvent(body) {
