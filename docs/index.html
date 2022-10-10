@@ -10,7 +10,7 @@
         <script src="https://cdn.hello.coop/js/hello-btn.js"></script>
         <style>
             html, body{
-                height: 100%;
+                min-height: 100%;
             }
             body{
                 min-width: 350px;
@@ -138,9 +138,9 @@
             </div>
             <div onclick="closeModal()" class="fixed w-screen h-screen z-40 flex items-center justify-center bg-black bg-opacity-60"></div>
         </div>
-        <div id="signin-page" style="display: none;" class="p-4 md:px-10 md:py-16 h-auto flex flex-col justify-center items-center">
+        <div id="signin-page" style="display: none;" class="p-3 md:px-10 md:py-16 h-auto flex flex-col justify-center items-center">
             <div class="bg-black w-full z-10 h-screen fixed inset-0 bg-opacity-50" aria-hidden="true"></div>
-            <section id="login-card" class="relative z-40 bg-white flex flex-col rounded-md p-6 text-center" style="width: 26rem;">
+            <section id="login-card" class="relative z-40 bg-white flex flex-col rounded-md px-6 pt-4 pb-6 text-center" style="width: 26rem; margin-bottom: 140px;">
                 <div class="flex items-center justify-center">
                     <img src="https://cdn.hello.coop/images/greenfield-logo.png" alt="greenfield fitness" class="h-12" />
                     <span class="text-2xl ml-2 font-medium ">Greenfield Fitness</span>
@@ -150,14 +150,14 @@
                     This is a demonstration app for you to experience how an app could use Hellō for registration.
                 </p>
                 
-                <div class="flex items-center justify-around my-6">
+                <div class="flex items-center justify-around my-4">
                     <img src="assets/1.svg" class="h-14" />
                     <img src="assets/2.svg" class="h-14" />
                     <img src="assets/3.svg" class="h-14" />
                     <img src="assets/4.svg" class="h-14" />
                 </div>
 
-                <div id="requires-container" class="text-left rounded-md p-4 mb-6 w-3/4 mx-auto">
+                <div id="requires-container" class="text-left rounded-md py-2 px-4 mb-6 w-3/4 mx-auto">
                     <span class="font-medium text-sm text-gray-light">Greenfield Fitness requires:</span>
                     <ul class="ml-4 my-2 space-y-2 list-disc list-inside text-sm text-gray-light">
                         <li>Full Name</li>
