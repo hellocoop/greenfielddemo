@@ -180,7 +180,7 @@
                         <img src="https://cdn.hello.coop/images/greenfield-logo.png" alt="greenfield fitness" class="h-9" />
                         <span class="text-xl ml-2 font-medium">Greenfield Fitness</span>
                     </div>
-                    <button onClick="signout()" class="text-sm font-semibold">Log Out</button>
+                    <button onClick="logout()" class="text-sm font-semibold">Log Out</button>
                 </div>
             </header>
             <main id="profile-page-content" style="display: none;" class="container px-6 sm:max-w-5xl mx-auto pt-20 pb-24">
@@ -364,8 +364,11 @@
         function showLoader(location) {
             if (location === "signin") {
                 $("signin-page").style.display = "none";
-                document.body.innerHTML += `
-               <div
+            } else {
+                $("profile-page").style.display = "none";
+            }
+            document.body.innerHTML += `
+                <div
                    id="loader"
                    style="
                        position: absolute;
@@ -378,7 +381,7 @@
                        width: 100%;
                        height: 100%;
                    "
-               >
+                >
                    <svg
                        id="spinner"
                        style="height: 3.2rem; width: 3.2rem"
@@ -386,7 +389,7 @@
                        fill="none"
                        viewBox="0 0 24 24"
                    >
-                       <circle
+                        <circle
                            style="opacity: 0.5"
                            cx="12"
                            cy="12"
@@ -397,49 +400,12 @@
                        <path opacity="0.5" d="M2 12C2 6.47715 6.47715 2 12 2" stroke="black" stroke-width="3" />
                    </svg>
                </div>
-               `;
-            } else {
-                $("profile-page").style.display = "none";
-                document.body.innerHTML += `
-                 <div
-                     id="loader"
-                     style="
-                         position: absolute;
-                         left: 0;
-                         top: 0;
-                         z-index: 50;
-                         display: flex;
-                         align-items: center;
-                         justify-content: center;
-                         width: 100%;
-                         height: 100%;
-                     "
-                 >
-                     <svg
-                         id="spinner"
-                         style="height: 3.2rem; width: 3.2rem"
-                         xmlns="http://www.w3.org/2000/svg"
-                         fill="none"
-                         viewBox="0 0 24 24"
-                     >
-                         <circle
-                             style="opacity: 0.5"
-                             cx="12"
-                             cy="12"
-                             r="10"
-                             stroke="currentColor"
-                             stroke-width="3"
-                         />
-                         <path opacity="0.5" d="M2 12C2 6.47715 6.47715 2 12 2" stroke="black" stroke-width="3" />
-                     </svg>
-                 </div>
-             `;
-            }
+            `;
         }
 
         function removeLoader() {
-            var el = $("loader");
-            el.remove();
+            const el = $("loader");
+            el && el.remove();
         }
 
         async function signin(event, { profile_update = false } = {}) {
@@ -468,12 +434,11 @@
             window.location.href = url;
         }
 
-        function signout() {
+        function logout() {
             sendEvent({ u: "/logout", n: "action" });
-            showLoader();
             sessionStorage.removeItem("data");
+            $("profile-page").style.display = "none";
             showSigninPage();
-            removeLoader();
         }
 
         function showSigninPage() {
