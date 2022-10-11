@@ -33,6 +33,8 @@
                     align-items: center !important;
                 }
                 section {
+                    background-color: transparent !important;
+                    color: white !important;
                     width: auto !important;
                 }
                 section h2 {
@@ -40,6 +42,15 @@
                 }
                 #signin-page {
                     justify-content: start !important;
+                }
+                #requires-container{
+                    background: rgba(34, 34, 34, 0.7) !important;
+                }
+                .text-gray-light{
+                    color: #aeaeae !important;
+                }
+                .hello-about {
+                    color: white;
                 }
             }
             .shadow-medium {
@@ -109,9 +120,6 @@
                 .text-gray-light{
                     color: #aeaeae;
                 }
-            }
-            .hello-about-bubble{
-                width: 100% !important;
             }
         </style>
     </head>
@@ -193,7 +201,7 @@
                 </div>
                 <h1 class="greeting absolute text-xl sm:text-2xl font-medium ml-28 sm:ml-0">Hellō <span id="preferred-name"></span>!</h1>
                 <div class="flex flex-col space-y-8 md:space-y-0 md:flex-row md:space-x-8 mt-16 md:mt-20">
-                    <div class="card w-full md:w-3/5 p-4 rounded-md shadow-medium text-lg font-medium">
+                    <div class="card w-full p-4 rounded-md shadow-medium text-lg font-medium">
                         <div class="space-y-4">
                             <div>
                                 <h3 class="opacity-60">Full Name</h3>
@@ -209,28 +217,9 @@
                         </div> -->
                         </div>
                         <button onclick="signin(event, {profile_update: true})" id="update-profile"
-                            class="mt-16 hello-btn-white-and-static"
-                        >
-                                ō&nbsp;&nbsp;&nbsp;Update Profile with Hellō
-                        </button>
-                    </div>
-                    <div class="card grid grid-cols-2 gap-5 p-4 w-full md:w-2/5 rounded-md shadow-medium font-medium">
-                        <div class="metric-card rounded-md p-4" style="background-color: #fcead2;">
-                            <span class="block text-3xl">0 mi</span>
-                            <span>distance covered</span>
-                        </div>
-                        <div class="metric-card rounded-md p-4" style="background-color: #faebe4;">
-                            <span class="block text-3xl">0 steps</span>
-                            <span>steps</span>
-                        </div>
-                        <div class="metric-card rounded-md p-4" style="background-color: #eceef5;">
-                            <span class="block text-3xl">0 cal</span>
-                            <span>calories burned</span>
-                        </div>
-                        <div class="metric-card rounded-md p-4" style="background-color: #f5ecec;">
-                            <span class="block text-3xl">0 mins</span>
-                            <span>exercised</span>
-                        </div>
+                            class="mt-16 hello-btn hello-btn-white-and-static"
+                            data-label="Update Profile with Hellō"
+                        />
                     </div>
                 </div>
             </main>
