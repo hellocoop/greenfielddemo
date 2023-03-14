@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Greenfield Fitness</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="https://cdn.hello.coop/images/greenfield-logo.png" />
+    <link href="https://cdn.hello.coop/css/tailwind.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.hello.coop/css/hello-btn.css" />
+    <script src="https://cdn.hello.coop/js/hello-btn.js"></script>
+    <style>
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            min-width: 350px;
+            overflow-x: auto;
+        }
+
+        #spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media only screen and (max-width: 500px) {
+            body {
+                padding: 0px !important;
+                align-items: center !important;
+            }
+
+            section {
+                background-color: transparent !important;
+                color: white !important;
+                width: auto !important;
+            }
+
+            section h2 {
+                opacity: 0.8 !important;
+            }
+
+            #signin-page {
+                padding: 0.75rem;
+                justify-content: start !important;
+            }
+
+            #requires-container {
+                background: rgba(34, 34, 34, 0.7) !important;
+            }
+
+            .text-gray-light {
+                color: #aeaeae !important;
+            }
+
+            .hello-about {
+                color: white;
+            }
+        }
+
+        .shadow-medium {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .greeting {
+            margin-top: -50px;
+        }
+
+        @media only screen and (max-width: 640px) {
+            .greeting {
+                margin-top: -24px;
+            }
+            #update-picture {
+                margin-left: 16px;
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            html {
+                color-scheme: light;
+            }
+
+            body,
+            #login-card,
+            #modal {
+                background-color: white;
+                color: #303030;
+            }
+
+            header {
+                background-color: white;
+            }
+
+            #profile-page {
+                background-color: white;
+            }
+
+            #requires-container {
+                background: rgba(236, 236, 236, 0.7);
+            }
+
+            .text-gray-light {
+                color: #808080;
+            }
+
+            .hello-about-container {
+                color: #303030;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            html {
+                color-scheme: dark;
+            }
+
+            body,
+            #login-card,
+            #modal {
+                background-color: #151515;
+                color: #D4D4D4;
+            }
+
+            #modal {
+                border: 1px solid #808080;
+            }
+
+            #profile-page {
+                background-color: #151515;
+            }
+
+            header {
+                background-color: #303030;
+            }
+
+            #picture {
+                border: 4px solid #808080;
+            }
+
+            .card {
+                background-color: #303030;
+                color: #D4D4D4;
+            }
+
+            .metric-card {
+                color: #303030;
+            }
+
+            #requires-container {
+                background: rgba(34, 34, 34, 0.7);
+            }
+
+            .text-gray-light {
+                color: #aeaeae;
+            }
+
+            .hello-about-container {
+                color: #d4d4d4;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-no-repeat bg-cover">
+    <div id="modal-container" class="fixed w-screen h-screen hidden items-center justify-center z-50">
+        <div id="modal" class="p-4 rounded-md w-96 z-50 flex relative">
+            <div class="w-10 h-10 bg-red-500 bg-opacity-20 rounded-full inline-flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <div class="flex flex-col ml-4">
+                <h4 class="font-medium">Error</h4>
+                <button onclick="closeModal()" class="absolute right-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <div class="text-sm opacity-80">
+                    <p id="error-container" class="hidden"><span id="error"></span></p>
+                    <p id="error-description-container" class="mt-2 hidden">Error description: <span
+                            id="error-description"></span></p>
+                </div>
+            </div>
+        </div>
+        <div onclick="closeModal()"
+            class="fixed w-screen h-screen z-40 flex items-center justify-center bg-black bg-opacity-60"></div>
+    </div>
+    <div id="signin-page" style="display: none;" class="px-10 py-16 h-auto flex flex-col justify-center items-center">
+        <div class="bg-black w-full z-10 h-screen fixed inset-0 bg-opacity-50" aria-hidden="true"></div>
+        <section id="login-card" class="relative z-40 bg-white flex flex-col rounded-md px-6 pt-4 pb-6 text-center"
+            style="width: 26rem; margin-bottom: 140px;">
+            <div class="flex items-center justify-center">
+                <img src="https://cdn.hello.coop/images/greenfield-logo.png" alt="greenfield fitness" class="h-12" />
+                <span class="text-2xl ml-2 font-medium ">Greenfield Fitness</span>
+            </div>
+
+            <p class="text-sm mt-2 text-gray-light">
+                This is a demonstration app for you to experience how an app could use Hellō for registration.
+            </p>
+
+            <div class="flex items-center justify-around my-4">
+                <img src="assets/1.svg" class="h-14" />
+                <img src="assets/2.svg" class="h-14" />
+                <img src="assets/3.svg" class="h-14" />
+                <img src="assets/4.svg" class="h-14" />
+            </div>
+
+            <div id="requires-container" class="text-left rounded-md py-2 px-4 mb-6 w-3/4 mx-auto">
+                <span class="font-medium text-sm text-gray-light">Greenfield Fitness requires:</span>
+                <ul class="ml-4 my-2 space-y-2 list-disc list-inside text-sm text-gray-light">
+                    <li>Full Name</li>
+                    <li>Preferred Name</li>
+                    <li>Verified Email</li>
+                    <li>Profile Picture</li>
+                </ul>
+            </div>
+
+            <div class="hello-container">
+                <button onclick="signin(event)" class="hello-btn hello-btn-black-on-light w-full" />
+                <button class="hello-about" />
+            </div>
+        </section>
+    </div>
+    <div id="profile-page" class="h-screen" style="display: none;">
+        <header class="h-14 shadow-medium fixed w-full z-40">
+            <div class="h-full flex items-center justify-between container px-6 sm:max-w-5xl mx-auto">
+                <div class="flex items-center justify-center">
+                    <img src="https://cdn.hello.coop/images/greenfield-logo.png" alt="greenfield fitness" class="h-9" />
+                    <span class="text-xl ml-2 font-medium">Greenfield Fitness</span>
+                </div>
+                <button onClick="logout()" class="text-sm font-semibold">Log Out</button>
+            </div>
+        </header>
+        <main id="profile-page-content" style="display: none;" class="container px-6 sm:max-w-5xl mx-auto pt-20 pb-24">
+            <div class="relative flex flex-col items-start sm:items-center">
+                <img src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1649&q=80"
+                    class="h-36 sm:h-64 w-full rounded-md object-cover" />
+                <div id="picture"
+                    class="shadow-medium border-4 border-white h-20 w-20 sm:h-36 sm:w-36 rounded-md -mt-12 sm:-mt-16 ml-4 sm:ml-0 bg-gray-200 bg-no-repeat bg-cover bg-center">
+                </div>
+                <button onclick="signin(event, {picture: true})" id="update-picture"
+                    class="mt-16 hello-btn hello-btn-white-and-static" style="padding: 10px 12px; margin-top: 12px; position: absolute; bottom: -48px;"
+                    data-label="ō&nbsp;&nbsp;&nbsp;Update Picture with Hellō" />
+            </div>
+            <h1 class="greeting absolute text-xl sm:text-2xl font-medium ml-28 sm:ml-0">Hellō <span
+                    id="preferred-name"></span>!</h1>
+            <div class="flex flex-col space-y-8 md:space-y-0 md:flex-row md:space-x-8 mt-16 md:mt-20">
+                <div class="card w-full p-4 rounded-md shadow-medium text-lg font-medium">
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="opacity-60">Full Name</h3>
+                            <h2 class="opacity-80" id="full-name"></h2>
+                        </div>
+                        <div>
+                            <h3 class="opacity-60">Email</h3>
+                            <h2 class="opacity-80" id="email"></h2>
+                            <button onclick="signin(event, {email: true})" id="update-email"
+                                class="mt-16 hello-btn hello-btn-white-and-static" style="padding: 10px 12px; margin-top: 10px;" data-label="ō&nbsp;&nbsp;&nbsp;Update Email with Hellō" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+<script>
+    const $ = (id) => document.getElementById(id);
+
+    const AUTHORIZATION_ENDPOINT = "https://wallet.hello-staging.net/authorize";
+    const INTROSPECTION_ENDPOINT = "https://wallet.hello-staging.net/oauth/introspect";
+    const CLIENT_ID = "3574f001-0874-4b20-bffd-8f3e37634274";
+
+    let data;
+
+    window.onload = async () => {
+        if ($("loader")) removeLoader(); //Remove loading if comes back to the page after leaving from a loading state
+        const params = new URLSearchParams(window.location.hash.substring(1));
+
+        if (params.has("id_token")) {
+            const id_token = params.get("id_token");
+            getInfo(id_token);
+        } else if (params.has("error")) {
+            user_data = {
+                error: params.get("error"),
+                error_description: params.get("error_description"),
+                error_uri: params.get("error_uri"),
+            };
+
+            $("modal-container").style.display = "flex";
+
+            if (user_data.error) {
+                $("error-container").style.display = "block";
+                switch (user_data.error) {
+                    case "access_denied":
+                        $("error").innerText = "User cancelled request.";
+                        break;
+                    default:
+                        $("error").innerText = "Something went wrong.";
+                }
+            }
+
+            if (user_data.error_description) {
+                $("error-description-container").style.display = "block";
+                switch (user_data.error_description) {
+                    default:
+                        $("error").innerText = "Something went wrong.";
+                }
+            }
+
+            if (sessionStorage.getItem("data")) {
+                getInfoFromSessionStorage()
+            } else {
+                showSigninPage();
+            }
+        } else if (sessionStorage.getItem("data")) {
+            getInfoFromSessionStorage()
+        } else {
+            showSigninPage();
+        }
+        clearFragment();
+    };
+
+    function uuidv4() {
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16));
+    }
+
+    function getInfoFromSessionStorage() {
+        try {
+            data = JSON.parse(sessionStorage.getItem("data"));
+            hydrate();
+            $("profile-page").style.display = $("profile-page-content").style.display = "block";
+        } catch (err) {
+            console.log(err);
+            sessionStorage.removeItem("data");
+            showSigninPage();
+        }
+    }
+
+    async function getInfo(id_token) {
+        showLoader();
+        const nonce = sessionStorage.getItem("nonce");
+        await fetch(INTROSPECTION_ENDPOINT, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: `id_token=${id_token}&nonce=${nonce}&client_id=${CLIENT_ID}`,
+        })
+            .then((r) => r.json())
+            .then((json) => {
+                if (!json.active) throw json
+                data = json
+                sessionStorage.setItem("data", JSON.stringify(data));
+                sendEvent({ u: "/profile" });
+                hydrate();
+                $("profile-page").style.display = $("profile-page-content").style.display = "block";
+            })
+            .catch((err) => {
+                console.error(err);
+                showSigninPage();
+            })
+            .finally(() => {
+                removeLoader();
+            })
+    }
+
+    function clearFragment() {
+        if (!window.location.hash) return;
+        window.location.replace("#");
+        // slice off the remaining '#' in HTML5:
+        if (typeof window.history.replaceState == "function") {
+            history.replaceState({}, "", window.location.href.slice(0, -1));
+        }
+    }
+
+    function closeModal() {
+        $("modal-container").style.display = "none";
+    }
+
+    function hydrate() {
+        const { name, nickname, picture, email, phone } = data;
+
+        $("full-name").innerText = name;
+        $("preferred-name").innerText = nickname;
+        $("email").innerText = email;
+        $("picture").src = picture;
+        $("picture").style.backgroundImage = `url('${picture}')`;
+        // $("phone").innerText = phone;
+    }
+
+    function showLoader(location) {
+        if (location === "signin") {
+            $("signin-page").style.display = "none";
+        } else {
+            $("profile-page").style.display = "none";
+        }
+        document.body.innerHTML += `
+                <div
+                   id="loader"
+                   style="
+                       position: absolute;
+                       left: 0;
+                       top: 0;
+                       z-index: 50;
+                       display: flex;
+                       align-items: center;
+                       justify-content: center;
+                       width: 100%;
+                       height: 100%;
+                   "
+                >
+                   <svg
+                       id="spinner"
+                       style="height: 3.2rem; width: 3.2rem"
+                       xmlns="http://www.w3.org/2000/svg"
+                       fill="none"
+                       viewBox="0 0 24 24"
+                   >
+                        <circle
+                           style="opacity: 0.5"
+                           cx="12"
+                           cy="12"
+                           r="10"
+                           stroke="currentColor"
+                           stroke-width="3"
+                       />
+                       <path opacity="0.5" d="M2 12C2 6.47715 6.47715 2 12 2" stroke="black" stroke-width="3" />
+                   </svg>
+               </div>
+            `;
+    }
+
+    function removeLoader() {
+        const el = $("loader");
+        el && el.remove();
+    }
+
+    async function signin(event, { email = false, picture = false } = {}) {
+        event.target.classList.add('hello-btn-loader')
+        event.target.disabled = true
+        if(email) {
+            await sendEvent({ u: "/update-email", n: "action" });
+        } else if(picture) {
+            await sendEvent({ u: "/update-picture", n: "action" });
+        } else {
+            await sendEvent({ u: "/start/login", n: "action" });
+        }
+
+        const nonce = uuidv4();
+        sessionStorage.setItem("nonce", nonce);
+
+        const url = new URL(AUTHORIZATION_ENDPOINT);
+        url.searchParams.append("client_id", CLIENT_ID);
+        url.searchParams.append("redirect_uri", window.location.origin + '/');
+        url.searchParams.append("nonce", nonce);
+        url.searchParams.append("response_mode", "fragment");
+        url.searchParams.append("response_type", "id_token");
+        if(email) {
+            url.searchParams.append("scope", "openid email profile_update");
+        } else if(picture) {
+            url.searchParams.append("scope", "openid picture profile_update");
+        } else {
+            url.searchParams.append("scope", "openid name nickname picture email");
+        }
+        window.location.href = url;
+    }
+
+    function logout() {
+        sendEvent({ u: "/logout", n: "action" });
+        sessionStorage.removeItem("data");
+        $("profile-page").style.display = "none";
+        showSigninPage();
+    }
+
+    function showSigninPage() {
+        let u = '/'
+        if (window.location.search) {
+            u += window.location.search
+        }
+        sendEvent({ u })
+        $("signin-page").style.display = "flex";
+        $("profile-page-content").style.display = "none";
+        document.body.style.backgroundImage = "url(https://images.unsplash.com/photo-1521804906057-1df8fdb718b7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1650&q=80)";
+    }
+
+    async function sendEvent(body) {
+        if (
+            localStorage.getItem("plausible_ignore") == "true" ||
+            window.location.origin !== "https://www.greenfielddemo.com"
+        ) {
+            console.info("Ignoring Event: localStorage flag");
+            return;
+        }
+        const _body = {
+            w: window.innerWidth,
+            d: "greenfielddemo.com",
+            ...body,
+            n: body.n || "pageview",
+            r: body.r || document.referrer || null,
+            u: new URL(body.u, "https://www.greenfielddemo.com"),
+        };
+        try {
+            await fetch("/api/event", {
+                method: "POST",
+                body: JSON.stringify(_body),
+            });
+            console.info(`Event sent: ${_body.u} (${_body.n})`);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+</script>
+<script>
+    /**
+     * If browser back button was used, flush cache
+     * This ensures that user will always see an accurate, up-to-date view based on their state
+     * https://stackoverflow.com/questions/8788802/prevent-safari-loading-from-cache-when-back-button-is-clicked
+     */
+    (function () {
+        window.onpageshow = function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
+    })();
+</script>
+
+</html>
