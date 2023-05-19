@@ -200,7 +200,8 @@
         <div onclick="closeModal()"
             class="fixed w-screen h-screen z-40 flex items-center justify-center bg-black bg-opacity-60"></div>
     </div>
-    <div id="signin-page" style="display: none;" class="px-10 py-16 h-auto flex flex-col justify-center items-center">
+    <div id="signin-page" style="visibility: hidden; position: absolute;"
+        class="px-10 py-16 h-auto flex flex-col justify-center items-center">
         <div class="bg-black w-full z-10 h-screen fixed inset-0 bg-opacity-50" aria-hidden="true"></div>
         <section id="login-card" class="relative z-40 bg-white flex flex-col rounded-md px-6 pt-4 pb-6 text-center"
             style="width: 26rem; margin-bottom: 140px;">
@@ -408,7 +409,10 @@
 
     function showLoader(location) {
         if (location === "signin") {
-            $("signin-page").style.display = "none";
+            //THIS IS A HACK ALTTERNATIVE FOR DISPLAY: NONE. 
+            //DISPLAY: NONE CAUSES A BUG WHERE HELLO-BUTTON JS IS UNABLE TO ADD EVENT LISTENERS TO THE TOOLTIP
+            $("signin-page").style.visibility = "hidden";
+            $("signin-page").style.position = "absolute";
         } else {
             $("profile-page").style.display = "none";
         }
@@ -496,7 +500,10 @@
             u += window.location.search
         }
         sendEvent({ u })
-        $("signin-page").style.display = "flex";
+        //THIS IS A HACK ALTTERNATIVE FOR DISPLAY: NONE. 
+        //DISPLAY: NONE CAUSES A BUG WHERE HELLO-BUTTON JS IS UNABLE TO ADD EVENT LISTENERS TO THE TOOLTIP
+        $("signin-page").style.visibility = "visible";
+        $("signin-page").style.position = "relative";
         $("profile-page-content").style.display = "none";
         document.body.style.backgroundImage = "url(https://images.unsplash.com/photo-1521804906057-1df8fdb718b7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1650&q=80)";
     }
