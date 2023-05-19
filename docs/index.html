@@ -210,7 +210,7 @@
 </head>
 
 <body class="bg-no-repeat bg-cover">
-    <div id="load-spinner" class="spinner"></div>
+    <div id="load-spinner" class="spinner" style="display: none;"></div>
     <div id="modal-container" class="fixed w-screen h-screen hidden items-center justify-center z-50">
         <div id="modal" class="p-4 rounded-md w-96 z-50 flex relative">
             <div class="w-10 h-10 bg-red-500 bg-opacity-20 rounded-full inline-flex items-center justify-center">
@@ -455,45 +455,11 @@
         } else {
             $("profile-page").style.display = "none";
         }
-        // document.body.innerHTML += `
-        //         <div
-        //            id="loader"
-        //            style="
-        //                position: absolute;
-        //                left: 0;
-        //                top: 0;
-        //                z-index: 50;
-        //                display: flex;
-        //                align-items: center;
-        //                justify-content: center;
-        //                width: 100%;
-        //                height: 100%;
-        //            "
-        //         >
-        //            <svg
-        //                id="spinner"
-        //                style="height: 3.2rem; width: 3.2rem"
-        //                xmlns="http://www.w3.org/2000/svg"
-        //                fill="none"
-        //                viewBox="0 0 24 24"
-        //            >
-        //                 <circle
-        //                    style="opacity: 0.5"
-        //                    cx="12"
-        //                    cy="12"
-        //                    r="10"
-        //                    stroke="currentColor"
-        //                    stroke-width="3"
-        //                />
-        //                <path opacity="0.5" d="M2 12C2 6.47715 6.47715 2 12 2" stroke="black" stroke-width="3" />
-        //            </svg>
-        //        </div>
-        //     `;
+        $("load-spinner").style.display = "block"
     }
 
     function removeLoader() {
-        const el = $("loader");
-        el && el.remove();
+        $("load-spinner").style.display = "none"
     }
 
     async function signin(event, { email = false, picture = false } = {}) {
