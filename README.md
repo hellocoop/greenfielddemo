@@ -13,7 +13,7 @@ This repo contains the source code powering [https://greenfielddemo.com/](https:
 
 ### Running locally
 
-1. `cd docs`
+1. `cd S3`
 1. `npx http-server . -p 3000` to serve the static files
 1. `open http://localhost:3000` to open the site in your favorite browser
 
