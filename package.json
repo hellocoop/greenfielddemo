@@ -7,8 +7,10 @@
     "doc": "docs"
   },
   "scripts": {
+    "postinstall": "node scripts/pre-requisites.mjs",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "build": "echo \"Error: nothing to build\" && exit 0"
+    "build": "echo \"Error: nothing to build\" && exit 0", 
+    "review": "./scripts/review.mjs"
   },
   "keywords": [],
   "author": "",
