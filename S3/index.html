@@ -287,21 +287,17 @@
                 <button onClick="logout()" class="text-sm font-semibold">Log Out</button>
             </div>
         </header>
-        <main id="profile-page-content" style="display: none;" class="container px-6 sm:max-w-5xl mx-auto pt-20 pb-24">
+        <main id="profile-page-content" style="display: none;" class="container px-6 sm:max-w-5xl mx-auto pt-20 pb-20">
             <div class="relative flex flex-col items-start sm:items-center">
                 <img src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1649&q=80"
                     class="h-36 sm:h-64 w-full rounded-md object-cover" />
                 <div id="picture"
                     class="shadow-medium border-4 border-white h-20 w-20 sm:h-36 sm:w-36 rounded-md -mt-12 sm:-mt-16 ml-4 sm:ml-0 bg-gray-200 bg-no-repeat bg-cover bg-center">
                 </div>
-                <button onclick="signin(event, {picture: true})" id="update-picture"
-                    class="mt-16 hello-btn hello-btn-white-and-static"
-                    style="padding: 10px 12px; margin-top: 12px; position: absolute; bottom: -48px;"
-                    data-label="ō&nbsp;&nbsp;&nbsp;Update Picture with Hellō" />
             </div>
             <h1 class="greeting absolute text-xl sm:text-2xl font-medium ml-28 sm:ml-0">Hellō <span
                     id="preferred-name"></span>!</h1>
-            <div class="flex flex-col space-y-8 md:space-y-0 md:flex-row md:space-x-8 mt-16 md:mt-20">
+            <div class="flex flex-col space-y-8 md:space-y-0 md:flex-row md:space-x-8 mt-10">
                 <div class="card w-full p-4 rounded-md shadow-medium text-lg font-medium">
                     <div class="space-y-4">
                         <div>
@@ -311,14 +307,14 @@
                         <div>
                             <h3 class="opacity-60">Email</h3>
                             <h2 class="opacity-80" id="email"></h2>
-                            <button onclick="signin(event, {email: true})" id="update-email"
-                                class="mt-16 hello-btn hello-btn-white-and-static"
-                                style="padding: 10px 12px; margin-top: 10px;"
-                                data-label="ō&nbsp;&nbsp;&nbsp;Update Email with Hellō" />
                         </div>
                     </div>
                 </div>
             </div>
+            <button onclick="signin(event, {update: true})" id="update-email"
+                    class="mt-16 hello-btn hello-btn-white-and-static"
+                    style="padding: 10px 12px; margin-top: 10px;"
+                    data-label="ō&nbsp;&nbsp;&nbsp;Update Profile with Hellō"></button>
         </main>
     </div>
 </body>
@@ -463,16 +459,9 @@
         $("load-spinner").style.display = "none"
     }
 
-    async function signin(event, { email = false, picture = false } = {}) {
+    async function signin(event, { update = false } = {}) {
         event.target.classList.add('hello-btn-loader')
         event.target.disabled = true
-        if (email) {
-            await sendEvent({ u: "/update-email", n: "action" });
-        } else if (picture) {
-            await sendEvent({ u: "/update-picture", n: "action" });
-        } else {
-            await sendEvent({ u: "/start/login", n: "action" });
-        }
 
         const nonce = uuidv4();
         sessionStorage.setItem("nonce", nonce);
@@ -483,12 +472,12 @@
         url.searchParams.append("nonce", nonce);
         url.searchParams.append("response_mode", "fragment");
         url.searchParams.append("response_type", "id_token");
-        if (email) {
-            url.searchParams.append("scope", "openid email profile_update");
-        } else if (picture) {
-            url.searchParams.append("scope", "openid picture profile_update");
+        url.searchParams.append("scope", "openid name nickname picture email");
+        if (update) {
+            url.searchParams.append("prompt", "consent");
+            await sendEvent({ u: "/update", n: "action" });
         } else {
-            url.searchParams.append("scope", "openid name nickname picture email");
+            await sendEvent({ u: "/start/login", n: "action" });
         }
         window.location.href = url;
     }
