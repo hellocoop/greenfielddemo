@@ -50,7 +50,7 @@
                 opacity: 0.8 !important;
             }
 
-            #signin-page {
+            #login-page {
                 padding: 0.75rem;
                 justify-content: start !important;
             }
@@ -211,7 +211,7 @@
 
 <body class="bg-no-repeat bg-cover">
     <!-- test-run -->
-    <div id="load-spinner" class="spinner" style="display: none;"></div>
+    <div id="load-spinner" class="spinner" style="display: block;"></div>
     <div id="modal-container" class="fixed w-screen h-screen hidden items-center justify-center z-50">
         <div id="modal" class="p-4 rounded-md w-96 z-50 flex relative">
             <div class="w-10 h-10 bg-red-500 bg-opacity-20 rounded-full inline-flex items-center justify-center">
@@ -240,7 +240,7 @@
         <div onclick="closeModal()"
             class="fixed w-screen h-screen z-40 flex items-center justify-center bg-black bg-opacity-60"></div>
     </div>
-    <div id="signin-page" style="visibility: hidden; position: absolute;"
+    <div id="login-page" style="visibility: hidden; position: absolute;"
         class="px-10 py-16 h-auto flex flex-col justify-center items-center">
         <div class="bg-black w-full z-10 h-screen fixed inset-0 bg-opacity-50" aria-hidden="true"></div>
         <section id="login-card" class="relative z-40 bg-white flex flex-col rounded-md px-6 pt-4 pb-6 text-center"
@@ -272,7 +272,7 @@
             </div>
 
             <div class="hello-container">
-                <button onclick="signin(event)" class="hello-btn hello-btn-black-on-light w-full" />
+                <button onclick="login({event})" class="hello-btn hello-btn-black-on-light w-full" />
                 <button class="hello-about" />
             </div>
         </section>
@@ -377,14 +377,16 @@
             if (sessionStorage.getItem("data")) {
                 getInfoFromSessionStorage()
             } else {
-                showSigninPage();
+                showLoginPage();
             }
         } else if (sessionStorage.getItem("data")) {
             getInfoFromSessionStorage()
         } else {
-            showSigninPage();
+            showLoginPage();
         }
+
         clearFragment();
+        removeLoader();
     };
 
     function uuidv4() {
@@ -399,12 +401,11 @@
         } catch (err) {
             console.log(err);
             sessionStorage.removeItem("data");
-            showSigninPage();
+            showLoginPage();
         }
     }
 
     async function getInfo(id_token) {
-        showLoader();
         const nonce = sessionStorage.getItem("nonce");
         await fetch(INTROSPECTION_ENDPOINT, {
             method: "POST",
@@ -424,10 +425,7 @@
             })
             .catch((err) => {
                 console.error(err);
-                showSigninPage();
-            })
-            .finally(() => {
-                removeLoader();
+                showLoginPage();
             })
     }
 
@@ -453,18 +451,6 @@
         $("picture").src = picture;
         $("picture").style.backgroundImage = `url('${picture}')`;
         // $("phone").innerText = phone;
-    }
-
-    function showLoader(location) {
-        if (location === "signin") {
-            //THIS IS A HACK ALTTERNATIVE FOR DISPLAY: NONE. 
-            //DISPLAY: NONE CAUSES A BUG WHERE HELLO-BUTTON JS IS UNABLE TO ADD EVENT LISTENERS TO THE TOOLTIP
-            $("signin-page").style.visibility = "hidden";
-            $("signin-page").style.position = "absolute";
-        } else {
-            $("profile-page").style.display = "none";
-        }
-        $("load-spinner").style.display = "block"
     }
 
     function removeLoader() {
@@ -504,10 +490,10 @@
         sendEvent({ u: "/logout", n: "action" });
         sessionStorage.removeItem("data");
         $("profile-page").style.display = "none";
-        showSigninPage();
+        showLoginPage();
     }
 
-    function showSigninPage() {
+    function showLoginPage() {
         let u = '/'
         if (window.location.search) {
             u += window.location.search
@@ -515,8 +501,8 @@
         sendEvent({ u })
         //THIS IS A HACK ALTTERNATIVE FOR DISPLAY: NONE. 
         //DISPLAY: NONE CAUSES A BUG WHERE HELLO-BUTTON JS IS UNABLE TO ADD EVENT LISTENERS TO THE TOOLTIP
-        $("signin-page").style.visibility = "visible";
-        $("signin-page").style.position = "relative";
+        $("login-page").style.visibility = "visible";
+        $("login-page").style.position = "relative";
         $("profile-page-content").style.display = "none";
         document.body.style.backgroundImage = "url(https://images.unsplash.com/photo-1521804906057-1df8fdb718b7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1650&q=80)";
     }
