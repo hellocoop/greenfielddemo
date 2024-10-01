@@ -311,10 +311,18 @@
                     </div>
                 </div>
             </div>
-            <button onclick="signin(event, {update: true})" id="update-email"
+            
+            <div class="flex justify-between flex-wrap gap-x-2">
+                <button onclick="login({event, update: true})" id="update-email"
                     class="mt-16 hello-btn hello-btn-white-and-static"
                     style="padding: 10px 12px; margin-top: 10px;"
                     data-label="ō&nbsp;&nbsp;&nbsp;Update Profile with Hellō"></button>
+    
+                <button onclick="invite({event})" id="update-email"
+                    class="mt-16 hello-btn hello-btn-white-and-static"
+                    style="padding: 10px 12px; margin-top: 10px;"
+                    data-label="ō&nbsp;&nbsp;&nbsp;Invite others to Greenfield Fitness"></button>
+            </div>
         </main>
     </div>
 </body>
@@ -323,15 +331,19 @@
 
     const AUTHORIZATION_ENDPOINT = "https://wallet.hello.coop/authorize";
     const INTROSPECTION_ENDPOINT = "https://wallet.hello.coop/oauth/introspect";
+    const INVITE_ENDPOINT = "https://wallet.hello.coop/invite";
     const CLIENT_ID = "app_GreenfieldFitnessDemoApp_s9z";
 
     let data;
 
     window.onload = async () => {
-        if ($("loader")) removeLoader(); //Remove loading if comes back to the page after leaving from a loading state
-        const params = new URLSearchParams(window.location.hash.substring(1));
-
-        if (params.has("id_token")) {
+        const search = window.location.search
+        const hash = window.location.hash.substring(1)
+        const params = new URLSearchParams(search || hash);
+        
+        if (params.has("iss")) {
+            return login({loginHint: params.get('login_hint')});
+        } else if (params.has("id_token")) {
             const id_token = params.get("id_token");
             getInfo(id_token);
         } else if (params.has("error")) {
@@ -459,9 +471,11 @@
         $("load-spinner").style.display = "none"
     }
 
-    async function signin(event, { update = false } = {}) {
-        event.target.classList.add('hello-btn-loader')
-        event.target.disabled = true
+    async function login({ event = null, update = false, loginHint = '' } = {}) {
+        if (event) {
+            event.target.classList.add('hello-btn-loader')
+            event.target.disabled = true
+        }
 
         const nonce = uuidv4();
         sessionStorage.setItem("nonce", nonce);
@@ -474,6 +488,9 @@
         url.searchParams.append("response_type", "id_token");
         url.searchParams.append("account", "personal");
         url.searchParams.append("scope", "openid name nickname picture email");
+        if(loginHint) {
+            url.searchParams.append("login_hint", loginHint);
+        }
         if (update) {
             url.searchParams.append("prompt", "consent");
             await sendEvent({ u: "/update", n: "action" });
@@ -529,6 +546,28 @@
         } catch (err) {
             console.error(err);
         }
+    }
+
+    async function invite({event = null} = {}) {
+        if (event) {
+            event.target.classList.add('hello-btn-loader')
+            event.target.disabled = true
+        }
+
+        const url = new URL(INVITE_ENDPOINT);
+        let sub;
+        try {
+            sub = JSON.parse(sessionStorage.data).sub
+        } catch(err) {
+            console.error('Error fetching sub from sessionStorage')
+            return logout();
+        }
+
+        url.searchParams.append("inviter", sub);
+        url.searchParams.append("client_id", CLIENT_ID);
+        url.searchParams.append("initiate_login_uri", window.location.origin);
+        url.searchParams.append("return_uri", window.location.origin);
+        window.location.href = url.href;
     }
 </script>
 <script>
