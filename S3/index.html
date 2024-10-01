@@ -472,6 +472,7 @@
         url.searchParams.append("nonce", nonce);
         url.searchParams.append("response_mode", "fragment");
         url.searchParams.append("response_type", "id_token");
+        url.searchParams.append("account", "personal");
         url.searchParams.append("scope", "openid name nickname picture email");
         if (update) {
             url.searchParams.append("prompt", "consent");
