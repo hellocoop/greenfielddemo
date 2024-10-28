@@ -341,7 +341,10 @@
         const params = new URLSearchParams(search || hash);
         
         if (params.has("iss")) {
-            return login({loginHint: params.get('login_hint')});
+            return login({
+                loginHint: params.get('login_hint'),
+                domainHint: params.get('domain_hint')
+            });
         } else if (params.has("id_token")) {
             const id_token = params.get("id_token");
             getInfo(id_token);
@@ -456,7 +459,7 @@
         $("load-spinner").style.display = "none"
     }
 
-    async function login({ event = null, update = false, loginHint = '' } = {}) {
+    async function login({ event = null, update = false, loginHint = '', domainHint = '' } = {}) {
         if (event) {
             event.target.classList.add('hello-btn-loader')
             event.target.disabled = true
@@ -475,6 +478,10 @@
         url.searchParams.append("scope", "openid name nickname picture email");
         if(loginHint) {
             url.searchParams.append("login_hint", loginHint);
+        }
+        if(domainHint) { //set only in idp login flow
+                //searchParams.set because we are replacing existing domain_hint value
+            url.searchParams.set("domain_hint", domainHint);
         }
         if (update) {
             url.searchParams.append("prompt", "consent");
