@@ -480,7 +480,7 @@
             url.searchParams.append("login_hint", loginHint);
         }
         if(domainHint) { //set only in idp login flow
-                            //set because we are replacing existing domain_hint value
+                //searchParams.set because we are replacing existing domain_hint value
             url.searchParams.set("domain_hint", domainHint);
         }
         if (update) {
