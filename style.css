@@ -1,96 +1,199 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+html, body {
+  min-height: 100%;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  min-width: 350px;
+  overflow-x: auto;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+#spinner {
+  animation: spin 1s linear infinite;
 }
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #f7df1eaa);
+@media only screen and (max-width: 500px) {
+  body {
+    padding: 0px !important;
+    align-items: center !important;
+  }
+
+  section {
+    background-color: transparent !important;
+    color: white !important;
+    width: auto !important;
+  }
+
+  section h2 {
+    opacity: 0.8 !important;
+  }
+
+  #login-page {
+    padding: 0.75rem;
+    justify-content: start !important;
+  }
+
+  #requires-container {
+    background: rgba(34, 34, 34, 0.7) !important;
+  }
+
+  .text-gray-light {
+    color: #aeaeae !important;
+  }
+
+  .hello-about {
+    color: white;
+  }
 }
 
-.card {
-  padding: 2em;
+.shadow-medium {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
-.read-the-docs {
-  color: #888;
+.greeting {
+  margin-top: -50px;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+@media only screen and (max-width: 640px) {
+  .greeting {
+    margin-top: -24px;
+  }
+
+  #update-picture {
+    margin-left: 16px;
+  }
 }
 
 @media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+  html {
+    color-scheme: light;
   }
-  a:hover {
-    color: #747bff;
+
+  body,
+  #login-card,
+  #modal {
+    background-color: white;
+    color: #303030;
   }
-  button {
-    background-color: #f9f9f9;
+
+  header {
+    background-color: white;
+  }
+
+  #profile-page {
+    background-color: white;
+  }
+
+  #requires-container {
+    background: rgba(236, 236, 236, 0.7);
+  }
+
+  .text-gray-light {
+    color: #808080;
+  }
+
+  .hello-about-container {
+    color: #303030;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+
+  body,
+  #login-card,
+  #modal {
+    background-color: #151515;
+    color: #D4D4D4;
+  }
+
+  #modal {
+    border: 1px solid #808080;
+  }
+
+  #profile-page {
+    background-color: #151515;
+  }
+
+  header {
+    background-color: #303030;
+  }
+
+  #picture {
+    border: 4px solid #808080;
+  }
+
+  .card {
+    background-color: #303030;
+    color: #D4D4D4;
+  }
+
+  .metric-card {
+    color: #303030;
+  }
+
+  #requires-container {
+    background: rgba(34, 34, 34, 0.7);
+  }
+
+  .text-gray-light {
+    color: #aeaeae;
+  }
+
+  .hello-about-container {
+    color: #d4d4d4;
+  }
+}
+
+.spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 40px;
+  width: 40px;
+  margin: -26px 0 0 -26px;
+  box-sizing: content-box;
+  animation: rotation 1s infinite linear;
+  border-width: 6px;
+  border-style: solid;
+  border-radius: 100%;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .spinner {
+    border-color: rgba(116, 116, 116, 0.3);
+    border-top-color: rgb(116, 116, 116);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .spinner {
+    border-color: rgba(75, 75, 75, 0.3);
+    border-top-color: rgb(75, 75, 75);
   }
 }
