@@ -1,0 +1,203 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  min-height: 100%;
+}
+
+body {
+  min-width: 350px;
+  overflow-x: auto;
+}
+
+#spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  body {
+    padding: 0px !important;
+    align-items: center !important;
+  }
+
+  section {
+    background-color: transparent !important;
+    color: white !important;
+    width: auto !important;
+  }
+
+  section h2 {
+    opacity: 0.8 !important;
+  }
+
+  #login-page {
+    padding: 0.75rem;
+    justify-content: start !important;
+  }
+
+  #requires-container {
+    background: rgba(34, 34, 34, 0.7) !important;
+  }
+
+  .text-gray-light {
+    color: #aeaeae !important;
+  }
+
+  .hello-about {
+    color: white;
+  }
+}
+
+.shadow-medium {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.greeting {
+  margin-top: -50px;
+}
+
+.hello-btn {
+  @apply font-sans;
+}
+
+@media only screen and (max-width: 640px) {
+  .greeting {
+    margin-top: -24px;
+  }
+
+  #update-picture {
+    margin-left: 16px;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  html {
+    color-scheme: light;
+  }
+
+  body,
+  #login-card,
+  #modal {
+    background-color: white;
+    color: #303030;
+  }
+
+  header {
+    background-color: white;
+  }
+
+  #profile-page {
+    background-color: white;
+  }
+
+  #requires-container {
+    background: rgba(236, 236, 236, 0.7);
+  }
+
+  .text-gray-light {
+    color: #808080;
+  }
+
+  .hello-about-container {
+    color: #303030;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+
+  body,
+  #login-card,
+  #modal {
+    background-color: #151515;
+    color: #D4D4D4;
+  }
+
+  #modal {
+    border: 1px solid #808080;
+  }
+
+  #profile-page {
+    background-color: #151515;
+  }
+
+  header {
+    background-color: #303030;
+  }
+
+  #picture {
+    border: 4px solid #808080;
+  }
+
+  .card {
+    background-color: #303030;
+    color: #D4D4D4;
+  }
+
+  .metric-card {
+    color: #303030;
+  }
+
+  #requires-container {
+    background: rgba(34, 34, 34, 0.7);
+  }
+
+  .text-gray-light {
+    color: #aeaeae;
+  }
+
+  .hello-about-container {
+    color: #d4d4d4;
+  }
+}
+
+.spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 40px;
+  width: 40px;
+  margin: -26px 0 0 -26px;
+  box-sizing: content-box;
+  animation: rotation 1s infinite linear;
+  border-width: 6px;
+  border-style: solid;
+  border-radius: 100%;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .spinner {
+    border-color: rgba(116, 116, 116, 0.3);
+    border-top-color: rgb(116, 116, 116);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .spinner {
+    border-color: rgba(75, 75, 75, 0.3);
+    border-top-color: rgb(75, 75, 75);
+  }
+}
