@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "vite build --outDir S3",
+    "preview": "vite preview --outDir S3"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
