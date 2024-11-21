@@ -26,6 +26,7 @@ const emailField = document.querySelector('#email');
 const pictureField = document.querySelector('#picture');
 const loadSpinner = document.querySelector('#load-spinner');
 const closeModalBtn = document.querySelector('#close-modal-btn');
+
 // bindings
 window.addEventListener('load', onLoad);
 loginBtn.addEventListener('click', login);
@@ -42,13 +43,12 @@ async function onLoad() {
     const idpFlow = params.has('iss');
     const code = params.has('code');
     const error = params.has('error');
-    const loggedIn = sessionStorage.getItem('profile');
-    const profile = loggedIn && JSON.parse(loggedIn);
+    const profile = JSON.parse(sessionStorage.getItem('profile'));
 
     if (idpFlow) return login(null, params);
     if (code) processCode(params);
-    else if (error) processError(params);
-    else if (loggedIn) showProfile(profile);
+    else if (error) processError(params, profile);
+    else if (profile) showProfile(profile);
     else showLoginPage();
 
     clearFragment();
@@ -101,41 +101,44 @@ function logout() {
 }
 
 async function processCode(params) {
-    const token = await fetchToken({
-        client_id: CONFIG.client_id,
-        redirect_uri: CONFIG.redirect_uri,
-        code_verifier: sessionStorage.getItem('code_verifier'),
-        nonce: sessionStorage.getItem('nonce'),
-        code: params.get('code'),
-        wallet: 'https://wallet.hello-dev.net',
-    });
-    const { payload: profile } = parseToken(token);
-
-    // clean code_verifier, nonce
-    sessionStorage.clear();
-
-    sessionStorage.setItem('profile', JSON.stringify(profile));
-    sendPlausibleEvent({ u: '/profile' });
-    showProfile(profile);
-    clearFragment();
+    try {
+        const token = await fetchToken({
+            client_id: CONFIG.client_id,
+            redirect_uri: CONFIG.redirect_uri,
+            code_verifier: sessionStorage.getItem('code_verifier'),
+            nonce: sessionStorage.getItem('nonce'),
+            code: params.get('code'),
+            wallet: 'https://wallet.hello-dev.net',
+        });
+        const { payload: profile } = parseToken(token);
+    
+        // clean code_verifier, nonce
+        sessionStorage.clear();
+    
+        sessionStorage.setItem('profile', JSON.stringify(profile));
+        sendPlausibleEvent({ u: '/profile' });
+        showProfile(profile);
+    } catch (err) {
+        console.error(err)
+        sessionStorage.clear();
+        showLoginPage();
+        processError(params);
+    } finally {
+        clearFragment();
+    }
 }
 
-function processError(params) {
+function processError(params, profile) {
     const error = params.get('error');
 
     modalContainer.style.display = 'flex';
 
-    if (error) {
-        errorContainer.style.display = 'block';
-        if (error === 'access_denied') errorField.innerText = 'User cancelled request.';
-        else errorField.innerText = 'Something went wrong.';
-    }
+    errorContainer.style.display = 'block';
+    if (error === 'access_denied') errorField.innerText = 'User cancelled request.';
+    else errorField.innerText = 'Something went wrong.';
 
-    const loggedIn = sessionStorage.getItem('profile');
-    if (loggedIn) {
-        const profile = JSON.parse(loggedIn);
-        showProfile(profile);
-    } else showLoginPage();
+    if (profile) showProfile(profile);
+    else showLoginPage();
 }
 
 function closeModal() {
