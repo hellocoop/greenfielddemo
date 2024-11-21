@@ -55,7 +55,7 @@ async function onLoad() {
   removeLoader();
 }
 
-async function login(event, params) {
+async function login(_, params) {
   loginBtn.classList.add('hello-btn-loader');
   loginBtn.disabled = true;
 
