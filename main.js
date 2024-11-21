@@ -1,77 +1,130 @@
-const $ = (id) => document.getElementById(id);
+import { createAuthRequest, fetchToken, parseToken, validateToken } from '@hellocoop/helper-browser'
 
-const AUTHORIZATION_ENDPOINT = "https://wallet.hello.coop/authorize";
-const INTROSPECTION_ENDPOINT = "https://wallet.hello.coop/oauth/introspect";
 const INVITE_ENDPOINT = "https://wallet.hello.coop/invite";
-const CLIENT_ID = "app_GreenfieldFitnessDemoApp_s9z";
+const CONFIG = {
+  client_id: "app_GreenfieldFitnessDemoApp_s9z",
+  redirect_uri: "http://localhost:5173",
+  scope: ['openid', 'profile', 'nickname'],
+  domain_hint: "personal",
+  wallet: "https://wallet.hello-dev.net"
+}
 
-let data;
+// mappings
+const loginBtn = document.querySelector('#login-btn')
+const profilePage = document.querySelector('#profile-page')
+const loginPage = document.querySelector('#login-page')
+const profilePageContent = document.querySelector('#profile-page-content')
+const modalContainer = document.querySelector('#modal-container')
+const errorContainer = document.querySelector('#error-container')
+const error = document.querySelector('#error')
+const errorDescriptionContainer = document.querySelector('#error-description-container')
+const fullNameField = document.querySelector('#full-name')
+const preferredNameField = document.querySelector('#preferred-name')
+const emailField = document.querySelector('#email')
+const pictureField = document.querySelector('#picture')
+const loadSpinner = document.querySelector('#load-spinner')
 
-window.onload = async () => {
-    const search = window.location.search
-    const hash = window.location.hash.substring(1)
-    const params = new URLSearchParams(search || hash);
-    
-    if (params.has("iss")) {
-        return login({
-            loginHint: params.get('login_hint'),
-            domainHint: params.get('domain_hint')
-        });
-    } else if (params.has("id_token")) {
-        const id_token = params.get("id_token");
-        getInfo(id_token);
-    } else if (params.has("error")) {
-        user_data = {
-            error: params.get("error"),
-            error_description: params.get("error_description"),
-            error_uri: params.get("error_uri"),
-        };
+// bindings
+window.addEventListener('load', onLoad)
+loginBtn.addEventListener('click', login)
 
-        $("modal-container").style.display = "flex";
 
-        if (user_data.error) {
-            $("error-container").style.display = "block";
-            switch (user_data.error) {
-                case "access_denied":
-                    $("error").innerText = "User cancelled request.";
-                    break;
-                default:
-                    $("error").innerText = "Something went wrong.";
-            }
-        }
+let profile;
 
-        if (user_data.error_description) {
-            $("error-description-container").style.display = "block";
-            switch (user_data.error_description) {
-                default:
-                    $("error").innerText = "Something went wrong.";
-            }
-        }
+async function onLoad () {
+  const search = window.location.search
+  const hash = window.location.hash.substring(1)
+  const params = new URLSearchParams(search || hash);
+  
+  if (params.has("iss")) {
+      return login({
+          loginHint: params.get('login_hint'),
+          domainHint: params.get('domain_hint')
+      });
+  } else if (params.has("code")) {
+    const token = await fetchToken({
+      client_id: CONFIG.client_id,
+      redirect_uri: CONFIG.redirect_uri,
+      code_verifier: sessionStorage.getItem('code_verifier'),
+      nonce: sessionStorage.getItem('nonce'),
+      code: params.get('code'),
+      wallet: "https://wallet.hello-dev.net"
+    })
+    const { payload: profile } = parseToken(token)
+    sessionStorage.setItem("profile", JSON.stringify(profile));
+    sendEvent({ u: "/profile" });
+    hydrate(profile);
+    profilePage.style.display = profilePageContent.style.display = "block";
+  } else if (params.has("error")) {
+      user_data = {
+          error: params.get("error"),
+          error_description: params.get("error_description"),
+          error_uri: params.get("error_uri"),
+      };
 
-        if (sessionStorage.getItem("data")) {
-            getInfoFromSessionStorage()
-        } else {
-            showLoginPage();
-        }
-    } else if (sessionStorage.getItem("data")) {
-        getInfoFromSessionStorage()
-    } else {
-        showLoginPage();
-    }
+      modalContainer.style.display = "flex";
 
-    clearFragment();
-    removeLoader();
+      if (user_data.error) {
+          errorContainer.style.display = "block";
+          switch (user_data.error) {
+              case "access_denied":
+                  error.innerText = "User cancelled request.";
+                  break;
+              default:
+                  error.innerText = "Something went wrong.";
+          }
+      }
+
+      if (user_data.error_description) {
+          errorDescriptionContainer.style.display = "block";
+          switch (user_data.error_description) {
+              default:
+                  error.innerText = "Something went wrong.";
+          }
+      }
+
+      if (sessionStorage.getItem("data")) {
+          getInfoFromSessionStorage()
+      } else {
+          showLoginPage();
+      }
+  } else if (sessionStorage.getItem("data")) {
+      getInfoFromSessionStorage()
+  } else {
+      showLoginPage();
+  }
+
+  clearFragment();
+  removeLoader();
 };
 
-function uuidv4() {
-    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16));
+async function login(event, update) {
+  if (event) {
+      event.target.classList.add('hello-btn-loader')
+      event.target.disabled = true
+  }
+
+  const { url, nonce, code_verifier } = await createAuthRequest(CONFIG)
+  
+  // save this for later to fetch the token
+  sessionStorage.setItem('nonce', nonce)
+  sessionStorage.setItem('code_verifier', code_verifier)
+
+  if (update) {
+      url.searchParams.append("prompt", "consent");
+      await sendEvent({ u: "/update", n: "action" });
+  } else {
+      await sendEvent({ u: "/start/login", n: "action" });
+  }
+
+  window.location.href = url;
 }
 
 function getInfoFromSessionStorage() {
     try {
         data = JSON.parse(sessionStorage.getItem("data"));
         hydrate();
-        $("profile-page").style.display = $("profile-page-content").style.display = "block";
+        profilePage.style.display = profilePageContent.style.display = "block";
     } catch (err) {
         console.log(err);
         sessionStorage.removeItem("data");
@@ -95,7 +148,7 @@ async function getInfo(id_token) {
             sessionStorage.setItem("data", JSON.stringify(data));
             sendEvent({ u: "/profile" });
             hydrate();
-            $("profile-page").style.display = $("profile-page-content").style.display = "block";
+            profilePage.style.display = profilePageContent.style.display = "block";
         })
         .catch((err) => {
             console.error(err);
@@ -113,61 +166,26 @@ function clearFragment() {
 }
 
 function closeModal() {
-    $("modal-container").style.display = "none";
+    modalContainer.style.display = "none";
 }
 
-function hydrate() {
-    const { name, nickname, picture, email, phone } = data;
-
-    $("full-name").innerText = name;
-    $("preferred-name").innerText = nickname;
-    $("email").innerText = email;
-    $("picture").src = picture;
-    $("picture").style.backgroundImage = `url('${picture}')`;
-    // $("phone").innerText = phone;
+function hydrate(profile) {
+    const { name, nickname, picture, email } = profile;
+    fullNameField.innerText = name;
+    preferredNameField.innerText = nickname;
+    emailField.innerText = email;
+    pictureField.src = picture;
+    pictureField.style.backgroundImage = `url('${picture}')`;
 }
 
 function removeLoader() {
-    $("load-spinner").style.display = "none"
-}
-
-async function login({ event = null, update = false, loginHint = '', domainHint = '' } = {}) {
-    if (event) {
-        event.target.classList.add('hello-btn-loader')
-        event.target.disabled = true
-    }
-
-    const nonce = uuidv4();
-    sessionStorage.setItem("nonce", nonce);
-
-    const url = new URL(AUTHORIZATION_ENDPOINT);
-    url.searchParams.append("client_id", CLIENT_ID);
-    url.searchParams.append("redirect_uri", window.location.origin + window.location.pathname);
-    url.searchParams.append("nonce", nonce);
-    url.searchParams.append("response_mode", "fragment");
-    url.searchParams.append("response_type", "id_token");
-    url.searchParams.append("domain_hint", "personal");
-    url.searchParams.append("scope", "openid name nickname picture email");
-    if(loginHint) {
-        url.searchParams.append("login_hint", loginHint);
-    }
-    if(domainHint) { //set only in idp login flow
-            //searchParams.set because we are replacing existing domain_hint value
-        url.searchParams.set("domain_hint", domainHint);
-    }
-    if (update) {
-        url.searchParams.append("prompt", "consent");
-        await sendEvent({ u: "/update", n: "action" });
-    } else {
-        await sendEvent({ u: "/start/login", n: "action" });
-    }
-    window.location.href = url;
+    loadSpinner.style.display = "none"
 }
 
 function logout() {
     sendEvent({ u: "/logout", n: "action" });
     sessionStorage.removeItem("data");
-    $("profile-page").style.display = "none";
+    profilePage.style.display = "none";
     showLoginPage();
 }
 
@@ -179,9 +197,9 @@ function showLoginPage() {
     sendEvent({ u })
     //THIS IS A HACK ALTTERNATIVE FOR DISPLAY: NONE. 
     //DISPLAY: NONE CAUSES A BUG WHERE HELLO-BUTTON JS IS UNABLE TO ADD EVENT LISTENERS TO THE TOOLTIP
-    $("login-page").style.visibility = "visible";
-    $("login-page").style.position = "relative";
-    $("profile-page-content").style.display = "none";
+    loginPage.style.visibility = "visible";
+    loginPage.style.position = "relative";
+    profilePageContent.style.display = "none";
     document.body.style.backgroundImage = "url(/bg.jpg)";
 }
 
