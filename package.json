@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build --outDir S3",
-    "preview": "vite preview --outDir S3"
+    "preview": "vite preview --outDir S3",
+    "test": "echo \"No tests to run\" && exit 0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
