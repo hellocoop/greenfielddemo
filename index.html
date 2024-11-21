@@ -87,7 +87,7 @@
                     <img src="https://cdn.hello.coop/images/greenfield-logo.png" alt="greenfield fitness" class="h-9" />
                     <span class="text-xl ml-2 font-medium">Greenfield Fitness</span>
                 </div>
-                <button onClick="logout()" class="text-sm font-semibold">Log Out</button>
+                <button id="logout-btn" class="text-sm font-semibold">Log Out</button>
             </div>
         </header>
         <main id="profile-page-content" style="display: none;" class="container px-6 sm:max-w-5xl mx-auto pt-20 pb-20">
@@ -115,7 +115,7 @@
             </div>
 
             <div class="flex justify-between flex-wrap gap-x-2">
-                <button onclick="login({event, update: true})" id="update-email"
+                <button id="update-btn"
                     class="mt-16 hello-btn hello-btn-white-and-static" style="padding: 10px 12px; margin-top: 10px;"
                     data-label="ō&nbsp;&nbsp;&nbsp;Update Profile with Hellō"></button>
                 <button onclick="invite({event})" id="invite" class="mt-16 hello-btn hello-btn-white-and-static"

@@ -5,12 +5,15 @@ const CONFIG = {
   client_id: "app_GreenfieldFitnessDemoApp_s9z",
   redirect_uri: "http://localhost:5173",
   scope: ['openid', 'profile', 'nickname'],
+  response_mode: "fragment",
   domain_hint: "personal",
   wallet: "https://wallet.hello-dev.net"
 }
 
 // mappings
 const loginBtn = document.querySelector('#login-btn')
+const logoutBtn = document.querySelector('#logout-btn')
+const updateBtn = document.querySelector('#update-btn')
 const profilePage = document.querySelector('#profile-page')
 const loginPage = document.querySelector('#login-page')
 const profilePageContent = document.querySelector('#profile-page-content')
@@ -27,133 +30,80 @@ const loadSpinner = document.querySelector('#load-spinner')
 // bindings
 window.addEventListener('load', onLoad)
 loginBtn.addEventListener('click', login)
-
-
-let profile;
+logoutBtn.addEventListener('click', logout)
+updateBtn.addEventListener('click', update)
 
 async function onLoad () {
   const search = window.location.search
   const hash = window.location.hash.substring(1)
   const params = new URLSearchParams(search || hash);
   
-  if (params.has("iss")) {
-      return login({
-          loginHint: params.get('login_hint'),
-          domainHint: params.get('domain_hint')
-      });
-  } else if (params.has("code")) {
-    const token = await fetchToken({
-      client_id: CONFIG.client_id,
-      redirect_uri: CONFIG.redirect_uri,
-      code_verifier: sessionStorage.getItem('code_verifier'),
-      nonce: sessionStorage.getItem('nonce'),
-      code: params.get('code'),
-      wallet: "https://wallet.hello-dev.net"
-    })
-    const { payload: profile } = parseToken(token)
-    sessionStorage.setItem("profile", JSON.stringify(profile));
-    sendEvent({ u: "/profile" });
-    hydrate(profile);
-    profilePage.style.display = profilePageContent.style.display = "block";
-  } else if (params.has("error")) {
-      user_data = {
-          error: params.get("error"),
-          error_description: params.get("error_description"),
-          error_uri: params.get("error_uri"),
-      };
+  const idpFlow = params.has('iss')
+  const code = params.has('code')
+  const error = params.has('error')
+  const profileFetched = sessionStorage.getItem('profile')
 
-      modalContainer.style.display = "flex";
-
-      if (user_data.error) {
-          errorContainer.style.display = "block";
-          switch (user_data.error) {
-              case "access_denied":
-                  error.innerText = "User cancelled request.";
-                  break;
-              default:
-                  error.innerText = "Something went wrong.";
-          }
-      }
-
-      if (user_data.error_description) {
-          errorDescriptionContainer.style.display = "block";
-          switch (user_data.error_description) {
-              default:
-                  error.innerText = "Something went wrong.";
-          }
-      }
-
-      if (sessionStorage.getItem("data")) {
-          getInfoFromSessionStorage()
-      } else {
-          showLoginPage();
-      }
-  } else if (sessionStorage.getItem("data")) {
-      getInfoFromSessionStorage()
-  } else {
-      showLoginPage();
+  if (idpFlow) console.log(123)
+  else if (code) processCode(params)
+  else if (error) processError(params)
+  else if (profileFetched) {
+    const profile = JSON.parse(sessionStorage.getItem('profile'))
+    hydrate(profile)
   }
+  else showLoginPage()
 
   clearFragment();
   removeLoader();
 };
 
-async function login(event, update) {
-  if (event) {
-      event.target.classList.add('hello-btn-loader')
-      event.target.disabled = true
-  }
-
+async function login() {
+  loginBtn.classList.add('hello-btn-loader')
+  loginBtn.disabled = true
+    
   const { url, nonce, code_verifier } = await createAuthRequest(CONFIG)
   
-  // save this for later to fetch the token
+  // needed later when fetching the token
   sessionStorage.setItem('nonce', nonce)
   sessionStorage.setItem('code_verifier', code_verifier)
 
-  if (update) {
-      url.searchParams.append("prompt", "consent");
-      await sendEvent({ u: "/update", n: "action" });
-  } else {
-      await sendEvent({ u: "/start/login", n: "action" });
-  }
+  await sendPlausibleEvent({ u: "/start/login", n: "action" });
 
   window.location.href = url;
 }
 
-function getInfoFromSessionStorage() {
-    try {
-        data = JSON.parse(sessionStorage.getItem("data"));
-        hydrate();
-        profilePage.style.display = profilePageContent.style.display = "block";
-    } catch (err) {
-        console.log(err);
-        sessionStorage.removeItem("data");
-        showLoginPage();
-    }
+async function update() {
+  updateBtn.classList.add('hello-btn-loader')
+  updateBtn.disabled = true
+    
+  const { url, nonce, code_verifier } = await createAuthRequest({
+    ...CONFIG,
+    prompt: 'consent'
+  })
+  
+  // needed later when fetching the token
+  sessionStorage.setItem('nonce', nonce)
+  sessionStorage.setItem('code_verifier', code_verifier)
+
+  await sendPlausibleEvent({ u: "/update", n: "action" });
+  
+  window.location.href = url;
 }
 
-async function getInfo(id_token) {
-    const nonce = sessionStorage.getItem("nonce");
-    await fetch(INTROSPECTION_ENDPOINT, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `id_token=${id_token}&nonce=${nonce}&client_id=${CLIENT_ID}`,
-    })
-        .then((r) => r.json())
-        .then((json) => {
-            if (!json.active) throw json
-            data = json
-            sessionStorage.setItem("data", JSON.stringify(data));
-            sendEvent({ u: "/profile" });
-            hydrate();
-            profilePage.style.display = profilePageContent.style.display = "block";
-        })
-        .catch((err) => {
-            console.error(err);
-            showLoginPage();
-        })
+async function processCode(params) {
+  const token = await fetchToken({
+    client_id: CONFIG.client_id,
+    redirect_uri: CONFIG.redirect_uri,
+    code_verifier: sessionStorage.getItem('code_verifier'),
+    nonce: sessionStorage.getItem('nonce'),
+    code: params.get('code'),
+    wallet: "https://wallet.hello-dev.net"
+  })
+  const { payload: profile } = parseToken(token)
+  sessionStorage.clear();
+  sessionStorage.setItem("profile", JSON.stringify(profile));
+  sendPlausibleEvent({ u: "/profile" });
+  hydrate(profile); 
+  clearFragment();
 }
 
 function clearFragment() {
@@ -165,45 +115,31 @@ function clearFragment() {
     }
 }
 
-function closeModal() {
-    modalContainer.style.display = "none";
-}
-
-function hydrate(profile) {
-    const { name, nickname, picture, email } = profile;
-    fullNameField.innerText = name;
-    preferredNameField.innerText = nickname;
-    emailField.innerText = email;
-    pictureField.src = picture;
-    pictureField.style.backgroundImage = `url('${picture}')`;
-}
-
 function removeLoader() {
     loadSpinner.style.display = "none"
 }
 
 function logout() {
-    sendEvent({ u: "/logout", n: "action" });
-    sessionStorage.removeItem("data");
-    profilePage.style.display = "none";
+    sendPlausibleEvent({ u: "/logout", n: "action" });
+    sessionStorage.clear();
     showLoginPage();
 }
+
 
 function showLoginPage() {
     let u = '/'
     if (window.location.search) {
         u += window.location.search
     }
-    sendEvent({ u })
-    //THIS IS A HACK ALTTERNATIVE FOR DISPLAY: NONE. 
-    //DISPLAY: NONE CAUSES A BUG WHERE HELLO-BUTTON JS IS UNABLE TO ADD EVENT LISTENERS TO THE TOOLTIP
+    sendPlausibleEvent({ u })
     loginPage.style.visibility = "visible";
     loginPage.style.position = "relative";
+    profilePage.style.display = "none";
     profilePageContent.style.display = "none";
     document.body.style.backgroundImage = "url(/bg.jpg)";
 }
 
-async function sendEvent(body) {
+async function sendPlausibleEvent(body) {
     if (
         localStorage.getItem("plausible_ignore") == "true" ||
         window.location.origin !== "https://www.greenfielddemo.com"
@@ -228,6 +164,17 @@ async function sendEvent(body) {
     } catch (err) {
         console.error(err);
     }
+}
+
+function hydrate(profile) {
+  const { name, nickname, picture, email, phone } = profile;
+
+  fullNameField.innerText = name;
+  preferredNameField.innerText = nickname;
+  emailField.innerText = email;
+  pictureField.src = picture;
+  pictureField.style.backgroundImage = `url('${picture}')`;
+  profilePage.style.display = profilePageContent.style.display = "block";
 }
 
 async function invite({event = null} = {}) {
