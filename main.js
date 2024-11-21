@@ -6,7 +6,6 @@ const CONFIG = {
     scope: ['openid', 'profile', 'nickname'],
     response_mode: 'fragment',
     domain_hint: 'personal',
-    wallet: 'https://wallet.hello-dev.net',
 };
 
 // refs
@@ -108,7 +107,6 @@ async function processCode(params) {
             code_verifier: sessionStorage.getItem('code_verifier'),
             nonce: sessionStorage.getItem('nonce'),
             code: params.get('code'),
-            wallet: 'https://wallet.hello-dev.net',
         });
         const { payload: profile } = parseToken(token);
     
@@ -225,7 +223,7 @@ async function invite() {
     // })
     // window.location.href = url.href;
 
-    const url = new URL('https://wallet.hello-dev.net/invite');
+    const url = new URL('https://wallet.hello.coop/invite');
 
     url.searchParams.append('inviter', sub);
     url.searchParams.append('client_id', CONFIG.client_id);
