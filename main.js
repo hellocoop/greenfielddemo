@@ -1,6 +1,5 @@
-import { createAuthRequest, fetchToken, parseToken, validateToken } from '@hellocoop/helper-browser'
+import { createAuthRequest, fetchToken, parseToken } from '@hellocoop/helper-browser'
 
-const INVITE_ENDPOINT = "https://wallet.hello.coop/invite";
 const CONFIG = {
   client_id: "app_GreenfieldFitnessDemoApp_s9z",
   redirect_uri: "http://localhost:5173",
@@ -10,28 +9,31 @@ const CONFIG = {
   wallet: "https://wallet.hello-dev.net"
 }
 
-// mappings
+// refs
 const loginBtn = document.querySelector('#login-btn')
 const logoutBtn = document.querySelector('#logout-btn')
 const updateBtn = document.querySelector('#update-btn')
+const inviteBtn = document.querySelector('#invite-btn')
 const profilePage = document.querySelector('#profile-page')
 const loginPage = document.querySelector('#login-page')
 const profilePageContent = document.querySelector('#profile-page-content')
 const modalContainer = document.querySelector('#modal-container')
 const errorContainer = document.querySelector('#error-container')
-const error = document.querySelector('#error')
-const errorDescriptionContainer = document.querySelector('#error-description-container')
+const errorField = document.querySelector('#error')
 const fullNameField = document.querySelector('#full-name')
 const preferredNameField = document.querySelector('#preferred-name')
 const emailField = document.querySelector('#email')
 const pictureField = document.querySelector('#picture')
 const loadSpinner = document.querySelector('#load-spinner')
+const closeModalBtn = document.querySelector('#close-modal-btn')
 
 // bindings
 window.addEventListener('load', onLoad)
 loginBtn.addEventListener('click', login)
 logoutBtn.addEventListener('click', logout)
 updateBtn.addEventListener('click', update)
+inviteBtn.addEventListener('click', invite)
+closeModalBtn.addEventListener('click', closeModal)
 
 async function onLoad () {
   const search = window.location.search
@@ -41,28 +43,32 @@ async function onLoad () {
   const idpFlow = params.has('iss')
   const code = params.has('code')
   const error = params.has('error')
-  const profileFetched = sessionStorage.getItem('profile')
+  const loggedIn = sessionStorage.getItem('profile')
+  const profile = loggedIn && JSON.parse(loggedIn)
 
-  if (idpFlow) console.log(123)
+  if (idpFlow) return login(null, params)
   else if (code) processCode(params)
   else if (error) processError(params)
-  else if (profileFetched) {
-    const profile = JSON.parse(sessionStorage.getItem('profile'))
-    hydrate(profile)
-  }
+  else if (loggedIn) showProfile(profile)
   else showLoginPage()
 
   clearFragment();
   removeLoader();
 };
 
-async function login() {
+async function login(event, params) {
   loginBtn.classList.add('hello-btn-loader')
   loginBtn.disabled = true
     
-  const { url, nonce, code_verifier } = await createAuthRequest(CONFIG)
+  const { url, nonce, code_verifier } = await createAuthRequest({
+    ...CONFIG,
+    
+    //set only in idp flow
+    login_hint: params?.get('login_hint') || undefined,
+    domain_hint: params?.get('domain_hint') || CONFIG.domain_hint
+  })
   
-  // needed later when fetching the token
+  // needed later for fetching the token
   sessionStorage.setItem('nonce', nonce)
   sessionStorage.setItem('code_verifier', code_verifier)
 
@@ -80,13 +86,19 @@ async function update() {
     prompt: 'consent'
   })
   
-  // needed later when fetching the token
+  // needed later for fetching the token
   sessionStorage.setItem('nonce', nonce)
   sessionStorage.setItem('code_verifier', code_verifier)
 
   await sendPlausibleEvent({ u: "/update", n: "action" });
   
   window.location.href = url;
+}
+
+function logout() {
+  sendPlausibleEvent({ u: "/logout", n: "action" });
+  sessionStorage.clear();
+  showLoginPage();
 }
 
 async function processCode(params) {
@@ -99,11 +111,39 @@ async function processCode(params) {
     wallet: "https://wallet.hello-dev.net"
   })
   const { payload: profile } = parseToken(token)
+  
+  //clean code_verifier, nonce
   sessionStorage.clear();
+
   sessionStorage.setItem("profile", JSON.stringify(profile));
   sendPlausibleEvent({ u: "/profile" });
-  hydrate(profile); 
+  showProfile(profile); 
   clearFragment();
+}
+
+function processError(params) {
+  const error = params.get("error")
+
+  modalContainer.style.display = "flex";
+
+  if (error) {
+      errorContainer.style.display = "block";
+      if (error === "access_denied")
+        errorField.innerText = "User cancelled request.";
+      else
+        errorField.innerText = "Something went wrong.";
+  }
+
+  const loggedIn = sessionStorage.getItem('profile')
+  if (loggedIn) {
+    const profile = JSON.parse(loggedIn)
+    showProfile(profile)
+  } else 
+      showLoginPage();
+}
+
+function closeModal() {
+  modalContainer.style.display = "none";
 }
 
 function clearFragment() {
@@ -118,13 +158,6 @@ function clearFragment() {
 function removeLoader() {
     loadSpinner.style.display = "none"
 }
-
-function logout() {
-    sendPlausibleEvent({ u: "/logout", n: "action" });
-    sessionStorage.clear();
-    showLoginPage();
-}
-
 
 function showLoginPage() {
     let u = '/'
@@ -166,9 +199,8 @@ async function sendPlausibleEvent(body) {
     }
 }
 
-function hydrate(profile) {
-  const { name, nickname, picture, email, phone } = profile;
-
+function showProfile(profile) {
+  const { name, nickname, picture, email } = profile;
   fullNameField.innerText = name;
   preferredNameField.innerText = nickname;
   emailField.innerText = email;
@@ -177,25 +209,28 @@ function hydrate(profile) {
   profilePage.style.display = profilePageContent.style.display = "block";
 }
 
-async function invite({event = null} = {}) {
-    if (event) {
-        event.target.classList.add('hello-btn-loader')
-        event.target.disabled = true
-    }
+async function invite() {
+    inviteBtn.classList.add('hello-btn-loader')
+    inviteBtn.disabled = true
 
-    const url = new URL(INVITE_ENDPOINT);
-    let sub;
-    try {
-        sub = JSON.parse(sessionStorage.data).sub
-    } catch(err) {
-        console.error('Error fetching sub from sessionStorage')
-        return logout();
-    }
+    const { sub } = JSON.parse(sessionStorage.getItem('profile'))
+    
+    // TBD Uncomment and use this to create invite request URL when npm package is updated
+    // const { url } = createInviteRequest({
+    //   inviter: sub,
+    //   client_id: CONFIG.client_id,
+    //   initiate_login_uri: window.location.origin,
+    //   return_uri: window.location.origin
+    // })
+    // window.location.href = url.href;
+    
+    const url = new URL("https://wallet.hello-dev.net/invite");
 
     url.searchParams.append("inviter", sub);
-    url.searchParams.append("client_id", CLIENT_ID);
+    url.searchParams.append("client_id", CONFIG.client_id);
     url.searchParams.append("initiate_login_uri", window.location.origin);
     url.searchParams.append("return_uri", window.location.origin);
+
     window.location.href = url.href;
 }
 

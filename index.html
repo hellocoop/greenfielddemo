@@ -25,7 +25,7 @@
             </div>
             <div class="flex flex-col ml-4">
                 <h4 class="font-medium">Error</h4>
-                <button onclick="closeModal()" class="absolute right-4">
+                <button id="close-modal-btn" class="absolute right-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
@@ -34,12 +34,10 @@
                 </button>
                 <div class="text-sm opacity-80">
                     <p id="error-container" class="hidden"><span id="error"></span></p>
-                    <p id="error-description-container" class="mt-2 hidden">Error description: <span
-                            id="error-description"></span></p>
                 </div>
             </div>
         </div>
-        <div onclick="closeModal()" class="fixed w-screen h-screen z-40 flex items-center justify-center bg-black bg-opacity-60"></div>
+        <div class="fixed w-screen h-screen z-40 flex items-center justify-center bg-black bg-opacity-60"></div>
     </div>
 
     <div id="login-page" style="visibility: hidden; position: absolute;"
@@ -49,7 +47,7 @@
             style="width: 26rem; margin-bottom: 140px;">
             <div class="flex items-center justify-center">
                 <img src="https://cdn.hello.coop/images/greenfield-logo.png" alt="greenfield fitness" class="h-12" />
-                <span class="text-2xl ml-2 font-medium ">Greenfield Fitness</span>
+                <span class="text-2xl ml-2 font-medium">Greenfield Fitness</span>
             </div>
 
             <p class="text-sm mt-2 text-gray-light">
@@ -118,7 +116,7 @@
                 <button id="update-btn"
                     class="mt-16 hello-btn hello-btn-white-and-static" style="padding: 10px 12px; margin-top: 10px;"
                     data-label="ō&nbsp;&nbsp;&nbsp;Update Profile with Hellō"></button>
-                <button onclick="invite({event})" id="invite" class="mt-16 hello-btn hello-btn-white-and-static"
+                <button id="invite-btn" class="mt-16 hello-btn hello-btn-white-and-static"
                     style="padding: 10px 12px; margin-top: 10px;"
                     data-label="ō&nbsp;&nbsp;&nbsp;Invite others to Greenfield Fitness"></button>
             </div>
