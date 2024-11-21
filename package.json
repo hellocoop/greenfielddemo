@@ -1,7 +1,7 @@
 {
-  "name": "vite-project",
-  "private": true,
-  "version": "0.0.0",
+  "name": "greenfielddemo",
+  "description": "This repo contains the source code powering [https://greenfielddemo.com/](https://greenfielddemo.com/).",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
