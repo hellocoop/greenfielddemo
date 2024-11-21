@@ -2,7 +2,7 @@ import { createAuthRequest, fetchToken, parseToken } from '@hellocoop/helper-bro
 
 const CONFIG = {
     client_id: 'app_GreenfieldFitnessDemoApp_s9z',
-    redirect_uri: 'http://localhost:5173',
+    redirect_uri: 'https://www.greenfielddemo.com/',
     scope: ['openid', 'profile', 'nickname'],
     response_mode: 'fragment',
     domain_hint: 'personal',
