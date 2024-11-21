@@ -67,6 +67,10 @@ body {
   margin-top: -50px;
 }
 
+.hello-btn {
+  @apply font-sans;
+}
+
 @media only screen and (max-width: 640px) {
   .greeting {
     margin-top: -24px;
