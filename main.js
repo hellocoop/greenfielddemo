@@ -28,7 +28,7 @@ const closeModalBtn = document.querySelector('#close-modal-btn');
 
 // bindings
 window.addEventListener('load', onLoad);
-loginBtn.addEventListener('click', login);
+loginBtn.addEventListener('click', loginEvent);
 logoutBtn.addEventListener('click', logout);
 updateBtn.addEventListener('click', update);
 inviteBtn.addEventListener('click', invite);
@@ -39,22 +39,31 @@ async function onLoad() {
     const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(search || hash);
 
-    const idpFlow = params.has('iss');
-    const code = params.has('code');
-    const error = params.has('error');
-    const profile = JSON.parse(sessionStorage.getItem('profile'));
+    if (params.has('iss')) // 3P initiated login
+        return login(params);
 
-    if (idpFlow) return login(null, params);
-    if (code) processCode(params);
-    else if (error) processError(params, profile);
-    else if (profile) showProfile(profile);
-    else showLoginPage();
+    if (params.has('code')) // successful login from Hello
+        processCode(params);
+    else {
+        const profile = JSON.parse(sessionStorage.getItem('profile'));
+        if (params.has('error')) // we got back an error from Hello
+            processError(params, profile);
+        else if (profile) // we are logged in
+            showProfile(profile);
+        else 
+            showLoginPage();
+    }
 
     clearFragment();
     removeLoader();
 }
 
-async function login(_, params) {
+async function loginEvent( event, params ) {
+    // we don't use the event
+    login( params );
+}
+
+async function login(params) {
     loginBtn.classList.add('hello-btn-loader');
     loginBtn.disabled = true;
 
@@ -70,7 +79,7 @@ async function login(_, params) {
     sessionStorage.setItem('nonce', nonce);
     sessionStorage.setItem('code_verifier', code_verifier);
 
-    await sendPlausibleEvent({ u: '/start/login', n: 'action' });
+    await sendPlausibleEvent({ path: '/start/login', n: 'action' });
 
     window.location.href = url;
 }
@@ -88,33 +97,46 @@ async function update() {
     sessionStorage.setItem('nonce', nonce);
     sessionStorage.setItem('code_verifier', code_verifier);
 
-    await sendPlausibleEvent({ u: '/update', n: 'action' });
+    await sendPlausibleEvent({ path: '/update', n: 'action' });
 
     window.location.href = url;
 }
 
 function logout() {
-    sendPlausibleEvent({ u: '/logout', n: 'action' });
+    sendPlausibleEvent({ path: '/logout', n: 'action' });
     sessionStorage.clear();
     showLoginPage();
 }
 
 async function processCode(params) {
     try {
+        const code_verifier = sessionStorage.getItem('code_verifier');
+        const nonce = sessionStorage.getItem('nonce');
+        const code = params.get('code');
+        if (!code_verifier)
+            throw new Error('Missing code_verifier');
+        if (!nonce)
+            throw new Error('Missing nonce');
+        if (!code)
+            throw new Error('Missing code');
+
         const token = await fetchToken({
             client_id: CONFIG.client_id,
             redirect_uri: CONFIG.redirect_uri,
-            code_verifier: sessionStorage.getItem('code_verifier'),
-            nonce: sessionStorage.getItem('nonce'),
-            code: params.get('code'),
+            code_verifier,
+            nonce,
+            code,
         });
+        if (!token)
+            throw new Error('Did not get response from token endpoint');
         const { payload: profile } = parseToken(token);
-    
-        // clean code_verifier, nonce
-        sessionStorage.clear();
+        if (!profile)
+            throw new Error('Did not get profile from token');
+       
+        sessionStorage.clear();  // clean code_verifier, nonce
     
         sessionStorage.setItem('profile', JSON.stringify(profile));
-        sendPlausibleEvent({ u: '/profile' });
+        sendPlausibleEvent({ path: '/profile' });
         showProfile(profile);
     } catch (err) {
         console.error(err)
@@ -130,13 +152,17 @@ function processError(params, profile) {
     const error = params.get('error');
 
     modalContainer.style.display = 'flex';
-
     errorContainer.style.display = 'block';
-    if (error === 'access_denied') errorField.innerText = 'User cancelled request.';
-    else errorField.innerText = 'Something went wrong.';
 
-    if (profile) showProfile(profile);
-    else showLoginPage();
+    if (error === 'access_denied') 
+        errorField.innerText = 'User cancelled request.';
+    else 
+        errorField.innerText = 'Something went wrong.';
+
+    if (profile) 
+        showProfile(profile);
+    else 
+        showLoginPage();
 }
 
 function closeModal() {
@@ -157,11 +183,11 @@ function removeLoader() {
 }
 
 function showLoginPage() {
-    let u = '/';
+    let path = '/';
     if (window.location.search) {
-        u += window.location.search;
+        path += window.location.search;
     }
-    sendPlausibleEvent({ u });
+    sendPlausibleEvent({ path });
     loginPage.style.visibility = 'visible';
     loginPage.style.position = 'relative';
     profilePage.style.display = 'none';
@@ -169,37 +195,35 @@ function showLoginPage() {
     document.body.style.backgroundImage = 'url(/assets/bg.jpg)';
 }
 
-async function sendPlausibleEvent(body) {
-    if (
-        localStorage.getItem('plausible_ignore') == 'true'
-        || window.location.origin !== 'https://www.greenfielddemo.com'
-    ) {
-        console.info('Ignoring Event: localStorage flag');
-        return;
-    }
-    const _body = {
+const plausibleIgnore = localStorage.getItem('plausible_ignore') == 'true' 
+    || window.location.origin !== 'https://www.greenfielddemo.com';
+
+async function sendPlausibleEvent(pEvent) {
+    if ( plausibleIgnore )
+        return console.info('Ignoring Event: localStorage flag');
+
+    const { path, n = 'pageview' } = pEvent;
+
+    const u = new URL(path, 'https://www.greenfielddemo.com') 
+    const body = { u, n, 
         w: window.innerWidth,
         d: 'greenfielddemo.com',
-        ...body,
-        n: body.n || 'pageview',
-        r: body.r || document.referrer || null,
-        u: new URL(body.u, 'https://www.greenfielddemo.com'),
+        r: document.referrer || null,
     };
     try {
         await fetch('/api/event', {
             method: 'POST',
-            body: JSON.stringify(_body),
+            body: JSON.stringify(body),
         });
-        console.info(`Event sent: ${_body.u} (${_body.n})`);
+        console.info(`Event sent: ${body.u} (${body.n})`);
     } catch (err) {
         console.error(err);
     }
 }
 
 function showProfile(profile) {
-    const {
-        name, nickname, picture, email,
-    } = profile;
+    const { name, nickname, picture, email } = profile;
+
     fullNameField.innerText = name;
     preferredNameField.innerText = nickname;
     emailField.innerText = email;
@@ -213,6 +237,10 @@ async function invite() {
     inviteBtn.disabled = true;
 
     const { sub } = JSON.parse(sessionStorage.getItem('profile'));
+    if (!sub) {
+        console.error('Missing sub');
+        return; // ROHAN TBD
+    }
     const { url } = createInviteRequest({
       inviter: sub,
       client_id: CONFIG.client_id,
