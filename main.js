@@ -42,11 +42,11 @@ async function onLoad() {
     if (params.has('iss')) // 3P initiated login
         return login(params);
 
-    if (params.has('code')) // successful login from Hello
+    if (params.has('code')) // successful login from Hellō
         processCode(params);
     else {
         const profile = JSON.parse(sessionStorage.getItem('profile'));
-        if (params.has('error')) // we got back an error from Hello
+        if (params.has('error')) // we got back an error from Hellō
             processError(params, profile);
         else if (profile) // we are logged in
             showProfile(profile);
@@ -58,9 +58,9 @@ async function onLoad() {
     removeLoader();
 }
 
-async function loginEvent( event, params ) {
+function loginEvent(event, params) {
     // we don't use the event
-    login( params );
+    return login(params);
 }
 
 async function login(params) {
@@ -149,7 +149,7 @@ async function processCode(params) {
 }
 
 function processError(params, profile) {
-    const error = params.get('error');
+    const error = params && params.get('error');
 
     modalContainer.style.display = 'flex';
     errorContainer.style.display = 'block';
@@ -236,18 +236,25 @@ async function invite() {
     inviteBtn.classList.add('hello-btn-loader');
     inviteBtn.disabled = true;
 
-    const { sub } = JSON.parse(sessionStorage.getItem('profile'));
-    if (!sub) {
-        console.error('Missing sub');
-        return; // ROHAN TBD
+    try {
+        const { sub } = JSON.parse(sessionStorage.getItem('profile'));
+        if (!sub)
+            throw new Error('Missing sub')
+
+        const { url } = createInviteRequest({
+            inviter: sub,
+            client_id: CONFIG.client_id,
+            initiate_login_uri: window.location.origin,
+            return_uri: window.location.origin
+        })
+        window.location.href = url;
+    } catch(err) {
+        console.error(err)
+        inviteBtn.classList.remove('hello-btn-loader');
+        inviteBtn.disabled = false;
+        sessionStorage.clear();
+        processError();
     }
-    const { url } = createInviteRequest({
-      inviter: sub,
-      client_id: CONFIG.client_id,
-      initiate_login_uri: window.location.origin,
-      return_uri: window.location.origin
-    })
-    window.location.href = url;
 }
 
 /*
