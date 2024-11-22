@@ -16,6 +16,6 @@
     "vite": "^5.4.10"
   },
   "dependencies": {
-    "@hellocoop/helper-browser": "^2.3.0"
+    "@hellocoop/helper-browser": "^2.4.0"
   }
 }

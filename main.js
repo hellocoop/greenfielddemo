@@ -1,4 +1,4 @@
-import { createAuthRequest, fetchToken, parseToken } from '@hellocoop/helper-browser';
+import { createAuthRequest, fetchToken, parseToken, createInviteRequest } from '@hellocoop/helper-browser';
 
 const CONFIG = {
     client_id: 'app_GreenfieldFitnessDemoApp_s9z',
@@ -213,23 +213,12 @@ async function invite() {
     inviteBtn.disabled = true;
 
     const { sub } = JSON.parse(sessionStorage.getItem('profile'));
-
-    // TBD Uncomment and use this to create invite request URL when npm package is updated
-    // const { url } = createInviteRequest({
-    //   inviter: sub,
-    //   client_id: CONFIG.client_id,
-    //   initiate_login_uri: window.location.origin,
-    //   return_uri: window.location.origin
-    // })
-    // window.location.href = url.href;
-
-    const url = new URL('https://wallet.hello.coop/invite');
-
-    url.searchParams.append('inviter', sub);
-    url.searchParams.append('client_id', CONFIG.client_id);
-    url.searchParams.append('initiate_login_uri', window.location.origin);
-    url.searchParams.append('return_uri', window.location.origin);
-
+    const { url } = createInviteRequest({
+      inviter: sub,
+      client_id: CONFIG.client_id,
+      initiate_login_uri: window.location.origin,
+      return_uri: window.location.origin
+    })
     window.location.href = url.href;
 }
 
