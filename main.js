@@ -219,7 +219,7 @@ async function invite() {
       initiate_login_uri: window.location.origin,
       return_uri: window.location.origin
     })
-    window.location.href = url.href;
+    window.location.href = url;
 }
 
 /*
