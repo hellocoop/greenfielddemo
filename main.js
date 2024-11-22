@@ -199,7 +199,7 @@ const plausibleIgnore = localStorage.getItem('plausible_ignore') == 'true'
     || window.location.origin !== 'https://www.greenfielddemo.com';
 
 async function sendPlausibleEvent(pEvent) {
-    if ( plausibleIgnore )
+    if (plausibleIgnore)
         return console.info('Ignoring Event: localStorage flag');
 
     const { path, n = 'pageview' } = pEvent;
