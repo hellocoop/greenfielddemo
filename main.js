@@ -190,7 +190,7 @@ function showLoginPage() {
     loginPage.style.position = 'relative';
     profilePage.style.display = 'none';
     profilePageContent.style.display = 'none';
-    document.body.style.backgroundImage = 'url(/assets/bg.jpg)';
+    document.body.style.backgroundImage = 'url(/bg.jpg)';
 }
 
 const plausibleIgnore = localStorage.getItem('plausible_ignore') == 'true' 
