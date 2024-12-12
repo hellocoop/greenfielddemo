@@ -50,7 +50,7 @@ async function onLoad() {
             processError(params, profile);
         else if (profile) // we are logged in
             showProfile(profile);
-        else 
+        else
             showLoginPage();
     }
 
@@ -132,9 +132,9 @@ async function processCode(params) {
         const { payload: profile } = parseToken(token);
         if (!profile)
             throw new Error('Did not get profile from token');
-       
+
         sessionStorage.clear();  // clean code_verifier, nonce
-    
+
         sessionStorage.setItem('profile', JSON.stringify(profile));
         sendPlausibleEvent({ path: '/profile' });
         showProfile(profile);
@@ -152,14 +152,14 @@ function processError(params, profile) {
     modalContainer.style.display = 'flex';
     errorContainer.style.display = 'block';
 
-    if (error === 'access_denied') 
+    if (error === 'access_denied')
         errorField.innerText = 'User cancelled request.';
-    else 
+    else
         errorField.innerText = 'Something went wrong.';
 
-    if (profile) 
+    if (profile)
         showProfile(profile);
-    else 
+    else
         showLoginPage();
 }
 
@@ -193,7 +193,7 @@ function showLoginPage() {
     document.body.style.backgroundImage = 'url(/bg.jpg)';
 }
 
-const plausibleIgnore = localStorage.getItem('plausible_ignore') == 'true' 
+const plausibleIgnore = localStorage.getItem('plausible_ignore') == 'true'
     || window.location.origin !== 'https://www.greenfielddemo.com';
 
 async function sendPlausibleEvent(pEvent) {
@@ -202,8 +202,9 @@ async function sendPlausibleEvent(pEvent) {
 
     const { path, n = 'pageview' } = pEvent;
 
-    const u = new URL(path, 'https://www.greenfielddemo.com') 
-    const body = { u, n, 
+    const u = new URL(path, 'https://www.greenfielddemo.com')
+    const body = {
+        u, n,
         w: window.innerWidth,
         d: 'greenfielddemo.com',
         r: document.referrer || null,
@@ -246,7 +247,7 @@ async function invite() {
             return_uri: window.location.origin
         })
         window.location.href = url;
-    } catch(err) {
+    } catch (err) {
         console.error(err)
         inviteBtn.classList.remove('hello-btn-loader');
         inviteBtn.disabled = false;
