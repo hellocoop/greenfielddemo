@@ -4,8 +4,7 @@ const CONFIG = {
     client_id: 'app_GreenfieldFitnessDemoApp_s9z',
     redirect_uri: 'https://www.greenfielddemo.com/',
     scope: ['openid', 'profile', 'nickname'],
-    response_mode: 'fragment',
-    domain_hint: 'personal',
+    response_mode: 'fragment'
 };
 
 // refs
