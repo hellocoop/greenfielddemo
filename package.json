@@ -10,9 +10,8 @@
     "test": "echo \"No tests to run\" && exit 0"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.15",
+    "@tailwindcss/vite": "^4.2.2",
+    "tailwindcss": "^4.2.2",
     "vite": "^5.4.10"
   },
   "dependencies": {
