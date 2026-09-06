@@ -5,14 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --outDir S3",
-    "preview": "vite preview --outDir S3",
-    "test": "echo \"No tests to run\" && exit 0"
+    "build": "vite build --outDir dist",
+    "preview": "vite preview --outDir dist",
+    "test": "echo \"No tests to run\" && exit 0",
+    "deploy": "wrangler deploy"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "tailwindcss": "^4.3.3",
-    "vite": "^8.2.2"
+    "vite": "^8.2.2",
+    "wrangler": "^4.129.0"
   },
   "dependencies": {
     "@hellocoop/helper-browser": "^2.5.7"
