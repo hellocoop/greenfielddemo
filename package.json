@@ -10,11 +10,11 @@
     "test": "echo \"No tests to run\" && exit 0"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.2.2",
-    "tailwindcss": "^4.2.2",
-    "vite": "^5.4.10"
+    "@tailwindcss/vite": "^4.3.3",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.2.2"
   },
   "dependencies": {
-    "@hellocoop/helper-browser": "^2.4.0"
+    "@hellocoop/helper-browser": "^2.5.7"
   }
 }
