@@ -11,9 +11,6 @@ binding = "ASSETS"
 not_found_handling = "404-page"
 run_worker_first = ["/api/event"]
 
-# Until the custom domain is attached the worker is reachable on workers.dev only.
-# At cutover, restore:
-# [[routes]]
-# pattern = "www.greenfielddemo.com"
-# custom_domain = true
-workers_dev = true
+[[routes]]
+pattern = "www.greenfielddemo.com"
+custom_domain = true
