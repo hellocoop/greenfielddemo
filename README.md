@@ -7,7 +7,7 @@ This repo contains the source code powering [https://greenfielddemo.com/](https:
 ### Prerequisites
 
 1. Git
-1. Node (>=16.0.0), npm (>=7.0.0)
+1. Node (>=24.0.0), npm (>=11.0.0)
 1. A fork of the repo (for any contributions)
 1. A clone of the [greenfielddemo repo](https://github.com/hellocoop/greenfielddemo) on your local machine
 
