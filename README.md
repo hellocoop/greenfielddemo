@@ -20,3 +20,13 @@ This repo contains the source code powering [https://greenfielddemo.com/](https:
 ## License
 
 [MIT](LICENSE)
+## Deployment
+
+www.greenfielddemo.com is served from Cloudflare Workers as static assets (see `wrangler.toml`).
+
+- `npm run build` writes the site to `dist/`.
+- `worker/index.js` proxies `POST /api/event` to Plausible; every other path is a static asset.
+- Merging a PR into `main` requires the **Ready for merge** check and the **Cloudflare Workers** preview build to pass.
+- Cloudflare Workers Builds watches `main` and deploys on merge. Nothing deploys from GitHub Actions.
+- `public/_headers` sets the CSP and is copied into `dist/` by the build.
+- `npm run deploy` deploys by hand with your own Cloudflare login. Normally unnecessary.
